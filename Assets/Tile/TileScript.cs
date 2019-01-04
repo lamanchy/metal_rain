@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TileScript : MonoBehaviour
 {
@@ -8,10 +9,24 @@ public class TileScript : MonoBehaviour
     public float elevation = 0;
     public float height = 30f;
     private Pathfinder pathfinder;
+    private TileScript group = null;
+
+    const int MAX_STEP = 1;
+    const int HEIGHT_OF_VISIBILITY = 1;
 
     void Start()
     {
         pathfinder = FindObjectOfType<Pathfinder>();
+    }
+
+    void SetGroup(TileScript groupToSet)
+    {
+        if (group != null) return;
+
+        group = groupToSet;
+
+        foreach (TileScript tile in GetNeighbours())
+            tile.SetGroup(group);
     }
 
     public void MoveToPosition()
@@ -32,8 +47,10 @@ public class TileScript : MonoBehaviour
         pathfinder.OnExit(this);
     }
 
-
-    // fns
+    public Vector3 GetTop()
+    {
+        return transform.position + new Vector3(0, transform.localScale.y, 0);
+    }
     
     public List<TileScript> GetPathTo(TileScript target)
     {
@@ -42,10 +59,14 @@ public class TileScript : MonoBehaviour
             {this, 0 }
         };
         List<TileScript> result = new List<TileScript>();
+
         SortedDictionary<int, List<TileScript>> toSearch = new SortedDictionary<int, List<TileScript>>
         {
-            { this.Distance(target), new List<TileScript>() { this } }
+            { this.Distance(target.pos), new List<TileScript>() { this } }
         };
+
+        SetGroup(this);
+        target.SetGroup(target);
 
         while (toSearch.Count > 0)
         {
@@ -59,6 +80,9 @@ public class TileScript : MonoBehaviour
             if (toSearch[currentDistance].Count == 0)
                 toSearch.Remove(currentDistance);
             
+            if (current.group != null && target.group != null && current.group != target.group)
+                break;
+
             if (current == target)
             {
                 while (current != this)
@@ -72,7 +96,7 @@ public class TileScript : MonoBehaviour
             foreach (TileScript neighbour in current.GetNeighbours())
             {
                 if (parent.ContainsKey(neighbour)) continue;
-                int distance = neighbour.Distance(target) + traveled[current];
+                int distance = neighbour.Distance(target.pos) + traveled[current];
                 if (!toSearch.ContainsKey(distance)) toSearch[distance] = new List<TileScript>();
                 toSearch[distance].Add(neighbour);
                 parent[neighbour] = current;
@@ -83,42 +107,68 @@ public class TileScript : MonoBehaviour
         return result;
     }
 
-    List<TileScript> GetNeighbours()
+    public List<TileScript> GetSurroundings(int distance = 1)
     {
         List<TileScript> result = new List<TileScript>();
-        List<Vector2Int> moves = new List<Vector2Int>
-        {
-            new Vector2Int(1, 0),
-            new Vector2Int(1, 1),
-            new Vector2Int(0, 1),
-            new Vector2Int(-1, 0),
-            new Vector2Int(-1, -1),
-            new Vector2Int(0, -1)
-        };
 
-
-        foreach (Vector2Int move in moves)
+        for (int x = -distance; x <= distance; x++)
         {
-            for (int z = -10; z < 11; z++)
+            for (int y = -distance; y <= distance; y++)
             {
-                Vector3Int key = new Vector3Int(pos.x+move.x, pos.y+move.y, z);
-                if (!pathfinder.allTiles.ContainsKey(key)) continue;
-                TileScript neighbour = pathfinder.allTiles[key];
-                if (Mathf.Abs(neighbour.elevation - elevation) > 1) continue;
-                result.Add(neighbour);
+                for (int z = -10; z < 11; z++)
+                {
+                    Vector3Int key = new Vector3Int(pos.x + x, pos.y + y, z);
+                    if (Distance(key) > distance || Distance(key) == 0) continue;
+                    if (!pathfinder.allTiles.ContainsKey(key)) continue;
+                    TileScript neighbour = pathfinder.allTiles[key];
+                    result.Add(neighbour);
+                }
             }
         }
 
         return result;
     }
 
+    public List<TileScript> GetVisibleSurroundings(int distance)
+    {
+        List<TileScript> neigbours = GetSurroundings(distance);
+        HashSet<TileScript> result = new HashSet<TileScript>();
 
-    int Distance(TileScript other)
+        RaycastHit hit;
+        foreach (TileScript target in neigbours)
+        {
+            int layerMask = 1 << 9;
+            Vector3 source = GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
+            Vector3 destination = target.GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
+            Vector3 direction = destination - source;
+            float dist = Vector3.Distance(source, destination);
+            if (Physics.Raycast(source, direction, out hit, dist, layerMask))
+            {
+                result.Add(hit.collider.gameObject.GetComponent<TileScript>());
+            } else
+            {
+                result.Add(target);
+            }
+        }
+
+        return result.ToList();
+    }
+
+    public List<TileScript> GetNeighbours()
+    {
+        List<TileScript> result = GetSurroundings(distance: 1);
+        result.RemoveAll(tile => Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
+
+        return result;
+    }
+
+
+    int Distance(Vector3Int otherPos)
     {
         return (
-            Mathf.Abs(pos.x - other.pos.x) +
-            Mathf.Abs(pos.y - other.pos.y) +
-            Mathf.Abs((pos.x - pos.y) - (other.pos.x - other.pos.y))
+            Mathf.Abs(pos.x - otherPos.x) +
+            Mathf.Abs(pos.y - otherPos.y) +
+            Mathf.Abs((pos.x - pos.y) - (otherPos.x - otherPos.y))
             ) / 2;
     }
 }

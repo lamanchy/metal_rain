@@ -8,7 +8,7 @@ public class Pathfinder : MonoBehaviour
     private TileScript source;
     private TileScript target;
     private List<TileScript> path = new List<TileScript>();
-    
+
     void Start()
     {
         foreach (TileScript tile in FindObjectsOfType<TileScript>())
@@ -23,6 +23,14 @@ public class Pathfinder : MonoBehaviour
     public void OnEnter(TileScript obj)
     {
         target = obj;
+
+        foreach (TileScript tile in obj.GetVisibleSurroundings(10))
+        {
+            if (tile == source) continue;
+            Renderer rend = tile.GetComponent<Renderer>();
+            rend.material.SetColor("_Color", Color.grey);
+        }
+
         if (source != null)
         {
             path = source.GetPathTo(target);
@@ -56,6 +64,12 @@ public class Pathfinder : MonoBehaviour
                 rend.material.SetColor("_Color", Color.red);
             }
             path = new List<TileScript>();
+        }
+        foreach (TileScript tile in obj.GetVisibleSurroundings(10))
+        {
+            if (tile == source) continue;
+            Renderer rend = tile.GetComponent<Renderer>();
+            rend.material.SetColor("_Color", Color.red);
         }
     }
 

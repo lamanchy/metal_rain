@@ -19,8 +19,8 @@ public class MeteorGenerator : MonoBehaviour
     void GenerateMeteor()
     {
         GameObject instance = Instantiate(meteor, transform);
-        int distance = 30;
-        instance.transform.position = new Vector3(Random.Range(-20f, 20f) + distance, distance, Random.Range(-20f, 20f) - distance);
+        int distance = 50;
+        instance.transform.position = new Vector3(Random.Range(0f, 50f) + distance, distance, Random.Range(0f, 50f) - distance);
         float sizeFactor = Mathf.Sqrt(Random.Range(0.1f, 4f));
 
         instance.transform.localScale *= sizeFactor;
