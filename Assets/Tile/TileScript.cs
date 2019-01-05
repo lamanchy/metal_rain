@@ -17,14 +17,17 @@ public class TileScript : MonoBehaviour
     const int MAX_STEP = 1;
     const int HEIGHT_OF_VISIBILITY = 1;
 
-    void Start()
+    private void Awake()
     {
-        pathfinder = FindObjectOfType<Pathfinder>();
-
         hexMaterial = GetComponent<Renderer>().materials[1];
         defaultHexAlpha = hexMaterial.GetColor("_ColorMask").a;
 
         sideMaterial = GetComponent<Renderer>().materials[0];
+    }
+
+    void Start()
+    {
+        pathfinder = FindObjectOfType<Pathfinder>();
     }
 
     void SetGroup(TileScript groupToSet)
