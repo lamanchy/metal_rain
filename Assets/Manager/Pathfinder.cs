@@ -9,6 +9,18 @@ public class Pathfinder : MonoBehaviour
     private TileScript target;
     private List<TileScript> path = new List<TileScript>();
 
+    [SerializeField]
+    private Color defaultHexColor = Color.black;
+
+    [SerializeField]
+    private Color selectedHexColor = Color.blue;
+
+    [SerializeField]
+    private Color visibleHexColor = Color.yellow;
+
+    [SerializeField]
+    private Color pathHexColor = Color.green;
+
     void Start()
     {
         foreach (TileScript tile in FindObjectsOfType<TileScript>())
@@ -17,6 +29,8 @@ public class Pathfinder : MonoBehaviour
                 throw new System.Exception("Repeating position of tile..." + tile.pos.ToString());
             }
             allTiles[tile.pos] = tile;
+
+            tile.SetHexColor(defaultHexColor);
         }
     }
 
@@ -24,11 +38,10 @@ public class Pathfinder : MonoBehaviour
     {
         target = obj;
 
-        foreach (TileScript tile in obj.GetVisibleSurroundings(10))
+        foreach (TileScript tile in obj.GetVisibleSurroundings(4))
         {
             if (tile == source) continue;
-            Renderer rend = tile.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.grey);
+            tile.SetHexColor(visibleHexColor);
         }
 
         if (source != null)
@@ -36,15 +49,13 @@ public class Pathfinder : MonoBehaviour
             path = source.GetPathTo(target);
             foreach(TileScript tile in path)
             {
-                Renderer rend = tile.GetComponent<Renderer>();
-                rend.material.SetColor("_Color", Color.white);
+                tile.SetHexColor(pathHexColor);
             }
         }
 
         if (obj != source)
         {
-            Renderer rend = obj.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.white);
+            obj.SetHexColor(pathHexColor);
         }
     }
 
@@ -53,40 +64,34 @@ public class Pathfinder : MonoBehaviour
         target = null;
         if (obj != source)
         {
-            Renderer rend = obj.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.red);
+            obj.SetHexColor(defaultHexColor);
         }
         if (path.Count > 0)
         {
             foreach (TileScript tile in path)
             {
-                Renderer rend = tile.GetComponent<Renderer>();
-                rend.material.SetColor("_Color", Color.red);
+               tile.SetHexColor(defaultHexColor);
             }
-            path = new List<TileScript>();
+            path.Clear();
         }
         foreach (TileScript tile in obj.GetVisibleSurroundings(10))
         {
             if (tile == source) continue;
-            Renderer rend = tile.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.red);
+            tile.SetHexColor(defaultHexColor);
         }
     }
 
     public void OnDown()
     {
-        Renderer rend;
         if (source)
         {
-            rend = source.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.red);
+            source.SetHexColor(defaultHexColor);
         }
         if (path.Count > 0)
         {
             foreach (TileScript tile in path)
             {
-                rend = tile.GetComponent<Renderer>();
-                rend.material.SetColor("_Color", Color.red);
+                tile.SetHexColor(defaultHexColor);
             }
             path = new List<TileScript>();
         }
@@ -94,8 +99,7 @@ public class Pathfinder : MonoBehaviour
         source = target;
         if (source)
         {
-            rend = source.GetComponent<Renderer>();
-            rend.material.SetColor("_Color", Color.blue);
+            source.SetHexColor(selectedHexColor);
         }
     }
     

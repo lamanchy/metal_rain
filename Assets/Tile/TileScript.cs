@@ -10,6 +10,9 @@ public class TileScript : MonoBehaviour
     public float height = 30f;
     private Pathfinder pathfinder;
     private TileScript group = null;
+    private float defaultHexAlpha;
+    private Material hexMaterial;
+    private Material sideMaterial;
 
     const int MAX_STEP = 1;
     const int HEIGHT_OF_VISIBILITY = 1;
@@ -17,6 +20,11 @@ public class TileScript : MonoBehaviour
     void Start()
     {
         pathfinder = FindObjectOfType<Pathfinder>();
+
+        hexMaterial = GetComponent<Renderer>().materials[1];
+        defaultHexAlpha = hexMaterial.GetColor("_ColorMask").a;
+
+        sideMaterial = GetComponent<Renderer>().materials[0];
     }
 
     void SetGroup(TileScript groupToSet)
@@ -31,7 +39,11 @@ public class TileScript : MonoBehaviour
 
     public void MoveToPosition()
     {
-        gameObject.transform.position = new Vector3(pos.x*Mathf.Sqrt(1-0.25f), elevation-height/2f, pos.y - pos.x/2f);
+        float diameter = transform.localScale.x;
+        float smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
+        float sideSize = smallestWidth / Mathf.Sqrt(3.0f);
+
+        gameObject.transform.position = new Vector3(pos.x * ((diameter - sideSize) * 0.5f + sideSize), 0.0f, (pos.y - pos.x * 0.5f) * smallestWidth);
         Vector3 scale = transform.localScale;
         scale.Set(1, height/2f, 1);
         transform.localScale = scale;
@@ -45,6 +57,42 @@ public class TileScript : MonoBehaviour
     private void OnMouseExit()
     {
         pathfinder.OnExit(this);
+    }
+
+    // Sets new color for this hexagon; alpha is not overriden
+    public void SetHexColor(Color newColor)
+    {
+        newColor.a = defaultHexAlpha;
+        hexMaterial.SetColor("_ColorMask", newColor);
+    }
+
+    public void SetSideColor(Color newColor)
+    {
+        sideMaterial.SetColor("_Color", newColor);
+    }
+
+    public void SetTopTextures(Texture2D albedo, Texture2D normal)
+    {
+        hexMaterial.SetTexture("_MainTex", albedo);
+        hexMaterial.SetTexture("_BumpMap", normal);
+    }
+
+    public void SetSideMaterial(Material newMaterial)
+    {
+        sideMaterial = newMaterial;
+
+        var mats = GetComponent<Renderer>().sharedMaterials.ToArray();
+        mats[0] = sideMaterial;
+        GetComponent<Renderer>().sharedMaterials = mats;
+    }
+
+    public void SetTopMaterial(Material newMaterial)
+    {
+        hexMaterial = newMaterial;
+
+        var mats = GetComponent<Renderer>().sharedMaterials.ToArray();
+        mats[1] = hexMaterial;
+        GetComponent<Renderer>().sharedMaterials = mats;
     }
 
     public Vector3 GetTop()

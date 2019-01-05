@@ -7,6 +7,10 @@ public class GenerateMap : MonoBehaviour
 {
     public GameObject tile;
     public int size = 10;
+
+    [SerializeField]
+    private List<HexVisualsData> hexVisualsData;
+
     public void Generate()
     {
         GameObject parent = GameObject.Find("/Tiles");
@@ -29,10 +33,7 @@ public class GenerateMap : MonoBehaviour
                 float elevation = (Mathf.Pow(x - sqrt_size / 2, 2) + Mathf.Pow(y - sqrt_size / 2, 2)) / 100f;
                 //elevation = 1;
 
-                tileScript.pos = new Vector3Int(x, y, 0);
-                tileScript.elevation = elevation;
-                tileScript.height = elevation + 1;
-                tileScript.MoveToPosition();
+                SetTileScriptData(tileScript, new Vector3Int(x, y, 0), elevation);
             }
         }
     }
@@ -77,11 +78,29 @@ public class GenerateMap : MonoBehaviour
                 elevation *= 100f;
                 elevation -= 70f;
 
-                tileScript.pos = new Vector3Int(x, y+x/2, 0);
-                tileScript.elevation = elevation;
-                tileScript.height = elevation + 1;
-                tileScript.MoveToPosition();
+                SetTileScriptData(tileScript, new Vector3Int(x, y + x / 2, 0), elevation);
             }
         }
+    }
+
+    private void SetTileScriptData(TileScript tileScript, Vector3Int pos, float elevation)
+    {
+        tileScript.pos = pos;
+        tileScript.elevation = elevation;
+        tileScript.height = elevation + 1;
+
+        for(int i = hexVisualsData.Count - 1; i >= 0; --i)
+        {
+            if(elevation >= hexVisualsData[i].startHeight)
+            {
+                var randomVisual = hexVisualsData[i].items[Random.Range(0, hexVisualsData[i].items.Count)];
+                tileScript.SetSideMaterial(randomVisual.sidesMaterial);
+                tileScript.SetTopMaterial(randomVisual.topMaterial);
+
+                break;
+            }
+        }
+
+        tileScript.MoveToPosition();
     }
 }
