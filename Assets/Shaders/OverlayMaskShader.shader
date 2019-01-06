@@ -6,7 +6,7 @@
 		_Color("Color Albedo", Color) = (1,1,1,1)
 		_BumpMap("Normal map", 2D) = "bump" {}
 		_Mask("Mask (RGB)", 2D) = "white" {}
-		_ColorMask("Color Mask", Color) = (1,1,1,1)
+		[PerRendererData] _ColorMask("Color Mask", Color) = (0.3, 0.3, 0.3, 0.75)
 		_Glossiness("Smoothness", Range(0,1)) = 0.5
 		_Metallic("Metallic", Range(0,1)) = 0.0
 	}

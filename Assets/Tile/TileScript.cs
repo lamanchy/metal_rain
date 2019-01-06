@@ -10,19 +10,16 @@ public class TileScript : MonoBehaviour
     public float height = 30f;
     private Pathfinder pathfinder;
     private TileScript group = null;
-    private float defaultHexAlpha;
-    private Material hexMaterial;
-    private Material sideMaterial;
+    private new Renderer renderer;
+    private MaterialPropertyBlock propertyBlock;
 
     const int MAX_STEP = 1;
     const int HEIGHT_OF_VISIBILITY = 1;
 
     private void Awake()
     {
-        hexMaterial = GetComponent<Renderer>().materials[1];
-        defaultHexAlpha = hexMaterial.GetColor("_ColorMask").a;
-
-        sideMaterial = GetComponent<Renderer>().materials[0];
+        renderer = GetComponent<Renderer>();
+        propertyBlock = new MaterialPropertyBlock();
     }
 
     void Start()
@@ -65,36 +62,24 @@ public class TileScript : MonoBehaviour
     // Sets new color for this hexagon; alpha is not overriden
     public void SetHexColor(Color newColor)
     {
-        newColor.a = defaultHexAlpha;
-        hexMaterial.SetColor("_ColorMask", newColor);
+        renderer.GetPropertyBlock(propertyBlock);
+        propertyBlock.SetColor("_ColorMask", newColor);
+        renderer.SetPropertyBlock(propertyBlock);
     }
 
-    public void SetSideColor(Color newColor)
-    {
-        sideMaterial.SetColor("_Color", newColor);
-    }
-
-    public void SetTopTextures(Texture2D albedo, Texture2D normal)
-    {
-        hexMaterial.SetTexture("_MainTex", albedo);
-        hexMaterial.SetTexture("_BumpMap", normal);
-    }
-
+    // NOTE: Recommended to use only during map generation
     public void SetSideMaterial(Material newMaterial)
     {
-        sideMaterial = newMaterial;
-
         var mats = GetComponent<Renderer>().sharedMaterials.ToArray();
-        mats[0] = sideMaterial;
+        mats[0] = newMaterial;
         GetComponent<Renderer>().sharedMaterials = mats;
     }
 
+    // NOTE: Recommended to use only during map generation
     public void SetTopMaterial(Material newMaterial)
     {
-        hexMaterial = newMaterial;
-
         var mats = GetComponent<Renderer>().sharedMaterials.ToArray();
-        mats[1] = hexMaterial;
+        mats[1] = newMaterial;
         GetComponent<Renderer>().sharedMaterials = mats;
     }
 
