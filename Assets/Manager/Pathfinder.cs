@@ -9,7 +9,7 @@ namespace Manager {
         public Dictionary<Vector3Int, TileScript> allTiles;
         public Dictionary<Vector3Int, TileScript> AllTiles => allTiles ?? (allTiles = GetAllTiles());
     
-        public MovingEntity source;
+        public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
         private TileScript target;
     
         private List<TileScript> path = new List<TileScript>();
@@ -79,6 +79,9 @@ namespace Manager {
         }
 
         public void OnDown() {
+            if (target == null) {
+                return;
+            }
             if (source != null) {
                 source.CurrentTile.SetHexColor(defaultHexColor);
             }

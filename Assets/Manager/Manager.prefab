@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 350830601028802625}
   - component: {fileID: 2317093972189963204}
   - component: {fileID: 2585744991778580884}
+  - component: {fileID: 3909984064834936048}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -87,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5149d1a781428aa4684def4b7638f9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 0}
   defaultHexColor: {r: 0, g: 0, b: 0, a: 0.7490196}
   pathHexColor: {r: 0, g: 1, b: 0, a: 0.7490196}
   selectedHexColor: {r: 0.5943396, g: 0.14908342, b: 0.030838378, a: 0.7490196}
@@ -103,8 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d5acf186c5a3b408a23a875daa5020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  running: 0
   hasChanged: 0
+  running: 0
 --- !u!114 &2317093972189963204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,3 +134,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meteor: {fileID: 1834222659897999364, guid: 2f35cf5b86698bf4b8849c9d5c3ef72e, type: 3}
+--- !u!114 &3909984064834936048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857657293199553940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 698cd7572c3ed8e488f4cb18e594d1a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Entities: []
