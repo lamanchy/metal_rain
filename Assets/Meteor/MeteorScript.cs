@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Manager;
+using UnityEngine;
 
 public class MeteorScript : MonoBehaviour {
     public Vector3 angularVelocity = new Vector3(1, 1.5f, 2.5f);
-    private Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
     private TimeManager timeManager;
 
     public Vector3 velocity = new Vector3(-2, -2, 2);

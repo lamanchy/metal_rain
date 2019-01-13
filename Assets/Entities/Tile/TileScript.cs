@@ -3,16 +3,18 @@ using System.Linq;
 using UnityEngine;
 
 namespace Entities.Tile {
+    [RequireComponent(typeof(MeshCollider))]
     public class TileScript : BaseEntity {
         private const int MAX_STEP = 1;
         private const int HEIGHT_OF_VISIBILITY = 1;
 
-        public float elevation;
-        public float height = 30f;
+        public float Elevation;
+        public float Height;
+
+        public BaseEntity standingEntity;
 
         private TileScript group;
 
-        private Pathfinder pathfinder;
         private MaterialPropertyBlock propertyBlock;
         private new Renderer renderer;
 
@@ -21,18 +23,14 @@ namespace Entities.Tile {
             propertyBlock = new MaterialPropertyBlock();
         }
 
-        private void Start() {
-            pathfinder = FindObjectOfType<Pathfinder>();
-        }
-
-        public void MoveToPosition() {
+        public new void AlignToGrid() {
             var diameter = transform.localScale.x;
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
             var sideSize = smallestWidth / Mathf.Sqrt(3.0f);
 
-            transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), elevation, (Position.y - Position.x * 0.5f) * smallestWidth);
+            transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), Elevation, (Position.y - Position.x * 0.5f) * smallestWidth);
             var scale = transform.localScale;
-            scale.Set(1, height, 1);
+            scale.Set(1, Height, 1);
             transform.localScale = scale;
         }
 
@@ -49,11 +47,11 @@ namespace Entities.Tile {
         }
 
         private void OnMouseEnter() {
-            pathfinder.OnEnter(this);
+            Pathfinder.OnEnter(this);
         }
 
         private void OnMouseExit() {
-            pathfinder.OnExit(this);
+            Pathfinder.OnExit(this);
         }
 
         // Sets new color for this hexagon; alpha is not overriden
@@ -140,10 +138,10 @@ namespace Entities.Tile {
                         if (Distance(key) > distance || Distance(key) == 0) {
                             continue;
                         }
-                        if (!pathfinder.allTiles.ContainsKey(key)) {
+                        if (!Pathfinder.AllTiles.ContainsKey(key)) {
                             continue;
                         }
-                        var neighbour = pathfinder.allTiles[key];
+                        var neighbour = Pathfinder.AllTiles[key];
                         result.Add(neighbour);
                     }
                 }

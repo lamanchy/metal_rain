@@ -114,8 +114,8 @@ public class GenerateMap : MonoBehaviour {
 
     private void SetTileScriptData(TileScript tileScript, Vector3Int pos, float elevation, float height) {
         tileScript.Position = pos;
-        tileScript.elevation = elevation;
-        tileScript.height = height;
+        tileScript.Elevation = elevation;
+        tileScript.Height = height;
         
         for (var i = hexVisualsData.Count - 1; i >= 0; --i) {
             if (elevation < hexVisualsData[i].startHeight) {
@@ -128,6 +128,6 @@ public class GenerateMap : MonoBehaviour {
             break;
         }
 
-        tileScript.MoveToPosition();
+        tileScript.AlignToGrid();
     }
 }

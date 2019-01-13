@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2857657293199553943}
   - component: {fileID: 2857657293199553897}
   - component: {fileID: 350830601028802625}
+  - component: {fileID: 2317093972189963204}
+  - component: {fileID: 2585744991778580884}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -45,8 +47,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4bdce283f383934099a09482e3d6008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: {fileID: 7793005131081340625, guid: 669a1d1ea31c46e45afd84983721ffe1, type: 3}
-  size: 20
+  hexVisualsData:
+  - startHeight: 0
+    items:
+    - sidesMaterial: {fileID: 2100000, guid: e02571e5f9693654ba069e29511e38ca, type: 2}
+      topMaterial: {fileID: 2100000, guid: e6890aa98124b3b45931cde3710c0bf7, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: e02571e5f9693654ba069e29511e38ca, type: 2}
+      topMaterial: {fileID: 2100000, guid: 2b33842f071a492459a8d849968d2618, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: e02571e5f9693654ba069e29511e38ca, type: 2}
+      topMaterial: {fileID: 2100000, guid: 20ddfd74de82dd4418818daab34bbc02, type: 2}
+  - startHeight: 1.2
+    items:
+    - sidesMaterial: {fileID: 2100000, guid: fbd1d20f861ad2c4eb52a3a392871964, type: 2}
+      topMaterial: {fileID: 2100000, guid: 29aaaccc8be400f49bdce28a595e49c5, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: fbd1d20f861ad2c4eb52a3a392871964, type: 2}
+      topMaterial: {fileID: 2100000, guid: d6322881685524745a9c397f76295bec, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: 79a3fd4f026e7724f8d1ed875b564cb2, type: 2}
+      topMaterial: {fileID: 2100000, guid: d7737a8c9326ae24f9891b9f1ff33fc8, type: 2}
+  - startHeight: 2
+    items:
+    - sidesMaterial: {fileID: 2100000, guid: def9fd512033d3c4b99cda8e427b69aa, type: 2}
+      topMaterial: {fileID: 2100000, guid: 4530bfa2ec3c2cd46bf575ad45d177a8, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: 568b5296d47bab5449f9bdd4536a8e03, type: 2}
+      topMaterial: {fileID: 2100000, guid: 1459ce25425be2240bada83c896b396f, type: 2}
+    - sidesMaterial: {fileID: 2100000, guid: d3e4bc2f4fe535d40829d19fa7f977d5, type: 2}
+      topMaterial: {fileID: 2100000, guid: 08dae48e482a5154791977cdc25dc7c6, type: 2}
+  steepness: 10
+  size: 5000
+  tile: {fileID: 154007341, guid: 4e3fcc781963ddf4f90702a13f4e7f68, type: 3}
 --- !u!114 &2857657293199553897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,6 +87,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5149d1a781428aa4684def4b7638f9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultHexColor: {r: 0, g: 0, b: 0, a: 0.7490196}
+  pathHexColor: {r: 0, g: 1, b: 0, a: 0.7490196}
+  selectedHexColor: {r: 0.5943396, g: 0.14908342, b: 0.030838378, a: 0.7490196}
+  visibleHexColor: {r: 0.3018868, g: 0.28123888, b: 0.17799929, a: 0.7490196}
 --- !u!114 &350830601028802625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,3 +103,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d5acf186c5a3b408a23a875daa5020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  running: 0
+  hasChanged: 0
+--- !u!114 &2317093972189963204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857657293199553940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b10106abb543c9a4d8d8b84c0b96080d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  offset: {x: -2.3, y: 6, z: 0}
+--- !u!114 &2585744991778580884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857657293199553940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce368dd3d29a2e34c96229f3ccf57d05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meteor: {fileID: 1834222659897999364, guid: 2f35cf5b86698bf4b8849c9d5c3ef72e, type: 3}

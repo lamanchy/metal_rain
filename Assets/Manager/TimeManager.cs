@@ -1,27 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class TimeManager : MonoBehaviour
-{
-    public bool running;
-    public bool hasChanged;
+namespace Manager {
+    public class TimeManager : MonoBehaviour {
+        public bool hasChanged;
+        public bool running;
 
-    private void Start()
-    {
-        running = true;
-        hasChanged = false;
-    }
+        private void Start() {
+            running = true;
+            hasChanged = false;
+        }
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        if (hasChanged) hasChanged = false;
+        // Update is called once per frame
+        private void LateUpdate() {
+            if (hasChanged) {
+                hasChanged = false;
+            }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            running = !running;
-            hasChanged = true;
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                running = !running;
+                hasChanged = true;
+            }
         }
     }
 }

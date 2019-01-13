@@ -41,7 +41,7 @@ public class GenerateMapEditor : Editor {
         foreach (var ts in tiles) {
             Debug.Log(ts.gameObject);
             Instantiate(ts.gameObject);
-            ts.MoveToPosition();
+            ts.AlignToGrid();
         }
     }
 
