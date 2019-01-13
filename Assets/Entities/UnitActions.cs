@@ -60,6 +60,7 @@ namespace Entities {
                 yield break;
             }
             target.standingEntity.Interact(movingEntity);
+            movingEntity.InteractionQueue.Remove(target);
             yield return null;
         }
     }

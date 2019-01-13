@@ -7,8 +7,11 @@ using UnityEngine;
 namespace Entities {
     public class MovingEntity : BaseEntity {
         private readonly Queue<IUnitAction> actionQueue = new Queue<IUnitAction>();
-        public readonly List<TileEntity> PathQueue = new List<TileEntity>();
+
         private bool isExecutingActions;
+        
+        public readonly List<TileEntity> PathQueue = new List<TileEntity>();
+        public readonly List<TileEntity> InteractionQueue = new List<TileEntity>();
 
         public TileEntity DestinationTile => PathQueue.Count == 0 ? CurrentTile : PathQueue[PathQueue.Count - 1];
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
@@ -23,6 +26,7 @@ namespace Entities {
                 path.Remove(target);
                 PathQueue.AddRange(path);
                 actionQueue.Enqueue(new MoveAction(this, path));
+                InteractionQueue.Add(target);
                 actionQueue.Enqueue(new InteractAction(this, target));
             } else {
                 PathQueue.AddRange(path);
@@ -42,6 +46,8 @@ namespace Entities {
                 if (action.HasBeenInterrupted) {
                     actionQueue.Clear();
                     PathQueue.Clear();
+                    InteractionQueue.Clear();
+                    Pathfinder.RepaintHexColors();
                     break;
                 }
             }

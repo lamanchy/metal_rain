@@ -49,7 +49,8 @@ namespace Manager {
         public void OnDown() {
             if (target == null
              || path.Count == 0
-             || PathGoesThroughFog()) {
+             || PathGoesThroughFog()
+             || target.standingEntity == source) {
                 return;
             }
 
@@ -84,6 +85,11 @@ namespace Manager {
             foreach (var tile in source.PathQueue) {
                 tile.SetHexColor(HexColors.queued);
             }
+
+            // Draw queued interactions
+            foreach (var tile in source.InteractionQueue) {
+                tile.SetHexColor(HexColors.interaction);
+            }
             
             // Draw selected path
             var wentOutOfVisible = false;
@@ -100,8 +106,10 @@ namespace Manager {
                 return;
             }
 
-            if (target.standingEntity != null || path.Count == 0) {
+            if (path.Count == 0 || PathGoesThroughFog() || target.standingEntity == source) {
                 target.SetHexColor(HexColors.blocked);
+            } else if (target.standingEntity != null) {
+                target.SetHexColor(HexColors.interaction);
             }
         }
 
