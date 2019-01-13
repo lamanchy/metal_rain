@@ -8,7 +8,7 @@ namespace Entities {
         public Vector3Int Position;
 
         private Pathfinder pathfinder;
-        protected Pathfinder Pathfinder => pathfinder ?? (pathfinder = FindObjectOfType<Pathfinder>());
+        public Pathfinder Pathfinder => pathfinder ?? (pathfinder = FindObjectOfType<Pathfinder>());
 
         [ContextMenu("Align to grid")]
         public void AlignToGrid() => transform.position = Pathfinder.GetWorldPosition(Position);

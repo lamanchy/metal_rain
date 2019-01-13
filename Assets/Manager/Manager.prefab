@@ -88,11 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5149d1a781428aa4684def4b7638f9ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibilityRange: 4
-  defaultHexColor: {r: 0, g: 0, b: 0, a: 0.7490196}
-  pathHexColor: {r: 0, g: 1, b: 0, a: 0.7490196}
-  selectedHexColor: {r: 0.5943396, g: 0.14908342, b: 0.030838378, a: 0.7490196}
-  visibleHexColor: {r: 0.3018868, g: 0.28123888, b: 0.17799929, a: 0.7490196}
+  visibilityRange: 5
 --- !u!114 &350830601028802625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,8 +116,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: {x: -2.3, y: 6, z: 0}
-  distance: 1
-  rotation: 0
 --- !u!114 &2585744991778580884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,4 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 698cd7572c3ed8e488f4cb18e594d1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entities: []
+  Entities:
+  - {fileID: 0}
+  - {fileID: 0}

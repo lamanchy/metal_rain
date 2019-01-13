@@ -14,7 +14,7 @@ namespace Manager {
             for (var i = 0; i < Entities.Length; ++i) {
                 if (Input.GetKeyDown((i + 1).ToString())) {
                     index = i;
-                    pathfinder.ClearHexColors();
+                    pathfinder.RepaintHexColors();
                 }
             }
         }
