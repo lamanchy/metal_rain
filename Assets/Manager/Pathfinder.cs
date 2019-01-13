@@ -45,14 +45,13 @@ namespace Manager {
         }
 
         public void OnDown() {
-            if (target == null 
-             || target.standingEntity != null 
+            if (target == null
              || path.Count == 0
              || !source.CurrentTile.GetVisibleSurroundings(visibilityRange).Contains(target)) {
                 return;
             }
 
-            source.MoveTo(new List<TileEntity>(path));
+            source.EnqueueInteraction(new List<TileEntity>(path));
             path.Clear();
         }
 

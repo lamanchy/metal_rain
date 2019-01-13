@@ -32,4 +32,19 @@ namespace Entities {
             }
         }
     }
+
+    public class InteractAction : IUnitAction {
+        private readonly MovingEntity movingEntity;
+        private readonly BaseEntity target;
+
+        public InteractAction(MovingEntity movingEntity, BaseEntity target) {
+            this.movingEntity = movingEntity;
+            this.target = target;
+        }
+
+        public IEnumerator Execute() {
+            target.Interact(movingEntity);
+            yield return null;
+        }
+    }
 }

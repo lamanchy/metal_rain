@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Entities.Tile;
+using UnityEngine;
 
 namespace Entities {
     public class MovingEntity : BaseEntity {
@@ -15,10 +16,20 @@ namespace Entities {
             Pathfinder.AllTiles[Position].standingEntity = this;
         }
 
-        public void MoveTo(List<TileEntity> path) {
+        public void EnqueueInteraction(List<TileEntity> path) {
+            var target = path[0].standingEntity;
+            if (target != null) {
+                path.RemoveAt(0);
+            }
+
             path.Reverse();
             PathQueue.AddRange(path);
             actionQueue.Enqueue(new MoveAction(this, path));
+
+            if (target != null) {
+                actionQueue.Enqueue(new InteractAction(this, target));
+            }
+
             if (!isExecutingActions) {
                 StartCoroutine(DequeueCoroutine());
             }
@@ -30,6 +41,10 @@ namespace Entities {
                 yield return StartCoroutine(actionQueue.Dequeue().Execute());
             }
             isExecutingActions = false;
+        }
+
+        public override void Interact(BaseEntity otherEntity) {
+            Debug.Log("Interacted");
         }
     }
 }
