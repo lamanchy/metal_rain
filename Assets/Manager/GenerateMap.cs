@@ -1,36 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using Entities.Tile;
 using UnityEditor;
+using UnityEngine;
 
-public class GenerateMap : MonoBehaviour
-{
-    public GameObject tile;
-    public int size = 10;
-
+public class GenerateMap : MonoBehaviour {
     [SerializeField]
     private List<HexVisualsData> hexVisualsData;
 
-    public void Generate()
-    {
-        GameObject parent = GameObject.Find("/Tiles");
-        if (parent == null) parent = new GameObject("Tiles");
+    public int size = 10;
+    public GameObject tile;
 
-        foreach (TileScript ts in FindObjectsOfType<TileScript>())
-        {
+    public void Generate() {
+        var parent = GameObject.Find("/Tiles");
+        if (parent == null) {
+            parent = new GameObject("Tiles");
+        }
+
+        foreach (var ts in FindObjectsOfType<TileScript>()) {
             DestroyImmediate(ts.gameObject);
         }
 
-        int sqrt_size = (int)Mathf.Sqrt(size);
-        for (int x = -sqrt_size; x < sqrt_size; x++)
-        {
-            for (int y = -sqrt_size; y < sqrt_size; ++y)
-            {
-                GameObject g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
+        var sqrt_size = (int) Mathf.Sqrt(size);
+        for (var x = -sqrt_size; x < sqrt_size; x++) {
+            for (var y = -sqrt_size; y < sqrt_size; ++y) {
+                var g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
                 g.transform.parent = parent.transform;
 
-                TileScript tileScript = g.GetComponent<TileScript>();
-                float elevation = (Mathf.Pow(x - sqrt_size / 2, 2) + Mathf.Pow(y - sqrt_size / 2, 2)) / 100f;
+                var tileScript = g.GetComponent<TileScript>();
+                var elevation = (Mathf.Pow(x - sqrt_size / 2, 2) + Mathf.Pow(y - sqrt_size / 2, 2)) / 100f;
                 //elevation = 1;
 
                 SetTileScriptData(tileScript, new Vector3Int(x, y, 0), elevation);
@@ -38,42 +35,37 @@ public class GenerateMap : MonoBehaviour
         }
     }
 
-    public void GenerateFromHeightMap(Texture2D source)
-    {
-        GameObject parent = GameObject.Find("/Tiles");
-        if (parent == null) parent = new GameObject("Tiles");
+    public void GenerateFromHeightMap(Texture2D source) {
+        var parent = GameObject.Find("/Tiles");
+        if (parent == null) {
+            parent = new GameObject("Tiles");
+        }
 
-        foreach (TileScript ts in FindObjectsOfType<TileScript>())
-        {
+        foreach (var ts in FindObjectsOfType<TileScript>()) {
             DestroyImmediate(ts.gameObject);
         }
-        
-        int pixels = source.width * source.height;
-        int pixelsPerTile = Mathf.FloorToInt(Mathf.Sqrt(pixels / size));
-        
+
+        var pixels = source.width * source.height;
+        var pixelsPerTile = Mathf.FloorToInt(Mathf.Sqrt(pixels / size));
+
         Debug.Log(source.width);
-        for (int x = 0; x < source.width / pixelsPerTile; x++)
-        {
-            for (int y = 0; y < source.height / pixelsPerTile; y++)
-            {
-                GameObject g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
+        for (var x = 0; x < source.width / pixelsPerTile; x++) {
+            for (var y = 0; y < source.height / pixelsPerTile; y++) {
+                var g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
                 g.transform.parent = parent.transform;
-                TileScript tileScript = g.GetComponent<TileScript>();
+                var tileScript = g.GetComponent<TileScript>();
 
                 float elevation = 0;
                 float sum = 0;
-                for (int i = 0; i < pixelsPerTile; ++i)
-                {
-                    for (int o = 0; o < pixelsPerTile; ++o)
-                    {
-                        if (x * pixelsPerTile + i < source.width && y * pixelsPerTile + o < source.height)
-                        {
+                for (var i = 0; i < pixelsPerTile; ++i) {
+                    for (var o = 0; o < pixelsPerTile; ++o) {
+                        if (x * pixelsPerTile + i < source.width && y * pixelsPerTile + o < source.height) {
                             elevation += source.GetPixel(x * pixelsPerTile + i, y * pixelsPerTile + o).grayscale;
                             sum += 1;
                         }
                     }
                 }
-                
+
                 elevation /= sum;
                 elevation *= 100f;
                 elevation -= 70f;
@@ -83,22 +75,20 @@ public class GenerateMap : MonoBehaviour
         }
     }
 
-    private void SetTileScriptData(TileScript tileScript, Vector3Int pos, float elevation)
-    {
-        tileScript.pos = pos;
+    private void SetTileScriptData(TileScript tileScript, Vector3Int pos, float elevation) {
+        tileScript.Position = pos;
         tileScript.elevation = elevation;
         tileScript.height = elevation + 1;
 
-        for(int i = hexVisualsData.Count - 1; i >= 0; --i)
-        {
-            if(elevation >= hexVisualsData[i].startHeight)
-            {
-                var randomVisual = hexVisualsData[i].items[Random.Range(0, hexVisualsData[i].items.Count)];
-                tileScript.SetSideMaterial(randomVisual.sidesMaterial);
-                tileScript.SetTopMaterial(randomVisual.topMaterial);
-
-                break;
+        for (var i = hexVisualsData.Count - 1; i >= 0; --i) {
+            if (!(elevation >= hexVisualsData[i].startHeight)) {
+                continue;
             }
+            var randomVisual = hexVisualsData[i].items[Random.Range(0, hexVisualsData[i].items.Count)];
+            tileScript.SetSideMaterial(randomVisual.sidesMaterial);
+            tileScript.SetTopMaterial(randomVisual.topMaterial);
+
+            break;
         }
 
         tileScript.MoveToPosition();

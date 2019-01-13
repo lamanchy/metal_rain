@@ -1,17 +1,14 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Entities.Tile;
 using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(TileScript))]
-public class TileEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
+public class TileEditor : Editor {
+    public override void OnInspectorGUI() {
         DrawDefaultInspector();
 
-        TileScript myScript = (TileScript)target;
-        if (GUILayout.Button("Move to position"))
-        {
+        var myScript = (TileScript) target;
+        if (GUILayout.Button("Move to position")) {
             myScript.MoveToPosition();
         }
     }

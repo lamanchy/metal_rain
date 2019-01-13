@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Entities.Tile;
 using UnityEngine;
 
 public class Pathfinder : MonoBehaviour
@@ -25,10 +26,10 @@ public class Pathfinder : MonoBehaviour
     {
         foreach (TileScript tile in FindObjectsOfType<TileScript>())
         {
-            if (allTiles.ContainsKey(tile.pos)) {
-                throw new System.Exception("Repeating position of tile..." + tile.pos.ToString());
+            if (allTiles.ContainsKey(tile.Position)) {
+                throw new System.Exception("Repeating position of tile..." + tile.Position.ToString());
             }
-            allTiles[tile.pos] = tile;
+            allTiles[tile.Position] = tile;
 
             tile.SetHexColor(defaultHexColor);
         }
