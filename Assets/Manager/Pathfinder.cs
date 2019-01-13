@@ -6,15 +6,15 @@ using UnityEngine;
 
 namespace Manager {
     public class Pathfinder : MonoBehaviour {
-        public Dictionary<Vector3Int, TileScript> allTiles;
-        public Dictionary<Vector3Int, TileScript> AllTiles => allTiles ?? (allTiles = GetAllTiles());
+        public Dictionary<Vector3Int, TileEntity> allTiles;
+        public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
 
         public int visibilityRange;
     
         public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
-        private TileScript target;
+        private TileEntity target;
     
-        private List<TileScript> path = new List<TileScript>();
+        private List<TileEntity> path = new List<TileEntity>();
 
         [SerializeField]
         private Color defaultHexColor = Color.black;
@@ -28,9 +28,9 @@ namespace Manager {
         [SerializeField]
         private Color visibleHexColor = Color.yellow;
 
-        private Dictionary<Vector3Int, TileScript> GetAllTiles() {
-            var tiles = new Dictionary<Vector3Int, TileScript>();
-            foreach (var tile in FindObjectsOfType<TileScript>()) {
+        private Dictionary<Vector3Int, TileEntity> GetAllTiles() {
+            var tiles = new Dictionary<Vector3Int, TileEntity>();
+            foreach (var tile in FindObjectsOfType<TileEntity>()) {
                 if (tiles.ContainsKey(tile.Position)) {
                     throw new Exception("Repeating position of tile..." + tile.Position);
                 }
@@ -39,7 +39,11 @@ namespace Manager {
             return tiles;
         }
 
-        public void OnEnter(TileScript obj) {
+        private void Start() {
+            OnEnter(source.CurrentTile);
+        }
+
+        public void OnEnter(TileEntity obj) {
             var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
 
             // Highlight visible tiles
@@ -50,6 +54,9 @@ namespace Manager {
                 tile.SetHexColor(visibleHexColor);
             }
 
+            if (obj == target) {
+                return;
+            }
             target = obj;
 
             if (source != null) {
@@ -64,36 +71,34 @@ namespace Manager {
             }
         }
 
-        public void OnExit(TileScript obj) {
+        public void OnExit(TileEntity tile) {
             target = null;
-            if (obj != source.CurrentTile) {
-                obj.SetHexColor(defaultHexColor);
-            }
             var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
-            foreach (var tile in path) {
-                tile.SetHexColor(visibleTiles.Contains(tile) ? visibleHexColor : defaultHexColor);
+            foreach (var visibleTile in path) {
+                visibleTile.SetHexColor(visibleTiles.Contains(visibleTile) ? visibleHexColor : defaultHexColor);
             }
             path.Clear();
         }
 
         public void OnDown() {
-            if (target == null || target.standingEntity != null || path.Count == 0) {
+            if (target == null 
+             || target.standingEntity != null 
+             || path.Count == 0
+             || !source.CurrentTile.GetVisibleSurroundings(visibilityRange).Contains(target)) {
                 return;
-            }
-
-            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
-            if (!visibleTiles.Contains(target)) {
-                return;
-            }
-
-            source.CurrentTile.SetHexColor(defaultHexColor);
-            foreach (var tile in visibleTiles) {
-                tile.SetHexColor(defaultHexColor);
             }
 
             source.MoveTo(target);
-            source.CurrentTile.SetHexColor(selectedHexColor);
+
+            ClearHexColors();
+            OnEnter(source.CurrentTile);
             path.Clear();
+        }
+
+        public void ClearHexColors() {
+            foreach (var tile in AllTiles) {
+                tile.Value.SetHexColor(defaultHexColor);
+            }
         }
 
         public Vector3 GetWorldPosition(Vector3Int position) => AllTiles[position].transform.position;
