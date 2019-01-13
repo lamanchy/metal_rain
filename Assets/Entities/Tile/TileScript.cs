@@ -75,7 +75,7 @@ namespace Entities.Tile {
             GetComponent<Renderer>().sharedMaterials = mats;
         }
 
-        public Vector3 GetTop() => transform.position + new Vector3(0, transform.localScale.y, 0);
+        public Vector3 GetTop() => transform.position;
 
         public List<TileScript> GetPathTo(TileScript target) {
             var parent = new Dictionary<TileScript, TileScript>();
