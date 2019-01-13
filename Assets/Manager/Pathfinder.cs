@@ -8,6 +8,8 @@ namespace Manager {
     public class Pathfinder : MonoBehaviour {
         public Dictionary<Vector3Int, TileScript> allTiles;
         public Dictionary<Vector3Int, TileScript> AllTiles => allTiles ?? (allTiles = GetAllTiles());
+
+        public int visibilityRange;
     
         public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
         private TileScript target;
@@ -38,24 +40,27 @@ namespace Manager {
         }
 
         public void OnEnter(TileScript obj) {
-            target = obj;
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
 
-            foreach (var tile in obj.GetVisibleSurroundings(4)) {
+            // Highlight visible tiles
+            foreach (var tile in visibleTiles) {
                 if (tile == source.CurrentTile) {
                     continue;
                 }
                 tile.SetHexColor(visibleHexColor);
             }
 
+            target = obj;
+
             if (source != null) {
                 path = source.CurrentTile.GetPathTo(target);
                 foreach (var tile in path) {
-                    tile.SetHexColor(pathHexColor);
+                    tile.SetHexColor(visibleTiles.Contains(tile) ? pathHexColor : selectedHexColor);
                 }
             }
 
-            if (obj != source.CurrentTile) {
-                obj.SetHexColor(pathHexColor);
+            if (target.standingEntity != null || path.Count == 0) {
+                target.SetHexColor(selectedHexColor);
             }
         }
 
@@ -64,40 +69,31 @@ namespace Manager {
             if (obj != source.CurrentTile) {
                 obj.SetHexColor(defaultHexColor);
             }
-            if (path.Count > 0) {
-                foreach (var tile in path) {
-                    tile.SetHexColor(defaultHexColor);
-                }
-                path.Clear();
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
+            foreach (var tile in path) {
+                tile.SetHexColor(visibleTiles.Contains(tile) ? visibleHexColor : defaultHexColor);
             }
-            foreach (var tile in obj.GetVisibleSurroundings(10)) {
-                if (tile == source.CurrentTile) {
-                    continue;
-                }
-                tile.SetHexColor(defaultHexColor);
-            }
+            path.Clear();
         }
 
         public void OnDown() {
-            if (target == null) {
+            if (target == null || target.standingEntity != null || path.Count == 0) {
                 return;
             }
-            if (source != null) {
-                source.CurrentTile.SetHexColor(defaultHexColor);
+
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
+            if (!visibleTiles.Contains(target)) {
+                return;
             }
-            if (path.Count > 0) {
-                foreach (var tile in path) {
-                    tile.SetHexColor(defaultHexColor);
-                }
-                path = new List<TileScript>();
+
+            source.CurrentTile.SetHexColor(defaultHexColor);
+            foreach (var tile in visibleTiles) {
+                tile.SetHexColor(defaultHexColor);
             }
-            if (source.CurrentTile == target) {
-                target = null;
-            }
+
             source.MoveTo(target);
-            if (source != null) {
-                source.CurrentTile.SetHexColor(selectedHexColor);
-            }
+            source.CurrentTile.SetHexColor(selectedHexColor);
+            path.Clear();
         }
 
         public Vector3 GetWorldPosition(Vector3Int position) => AllTiles[position].transform.position;

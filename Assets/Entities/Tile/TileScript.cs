@@ -128,6 +128,19 @@ namespace Entities.Tile {
             return result;
         }
 
+        public TileScript GetVisibleTile(TileScript tile) {
+            var layerMask = 1 << 9;
+            var source = GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
+            var destination = tile.GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
+            var direction = destination - source;
+            var dist = Vector3.Distance(source, destination);
+
+            RaycastHit hit;
+            return Physics.Raycast(source, direction, out hit, dist, layerMask) 
+                ? hit.collider.gameObject.GetComponent<TileScript>() 
+                : tile;
+        }
+
         public List<TileScript> GetSurroundings(int distance = 1) {
             var result = new List<TileScript>();
 
@@ -151,24 +164,10 @@ namespace Entities.Tile {
         }
 
         public List<TileScript> GetVisibleSurroundings(int distance) {
-            var neigbours = GetSurroundings(distance);
-            var result = new HashSet<TileScript>();
-
-            RaycastHit hit;
-            foreach (var target in neigbours) {
-                var layerMask = 1 << 9;
-                var source = GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
-                var destination = target.GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
-                var direction = destination - source;
-                var dist = Vector3.Distance(source, destination);
-                if (Physics.Raycast(source, direction, out hit, dist, layerMask)) {
-                    result.Add(hit.collider.gameObject.GetComponent<TileScript>());
-                } else {
-                    result.Add(target);
-                }
-            }
-
-            return result.ToList();
+            return GetSurroundings(distance).Aggregate(new HashSet<TileScript>(), (tiles, tile) => {
+                tiles.Add(GetVisibleTile(tile));
+                return tiles;
+            }).ToList();
         }
 
         public List<TileScript> GetNeighbours() {

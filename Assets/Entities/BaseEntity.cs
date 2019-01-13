@@ -9,7 +9,7 @@ namespace Entities {
 
         private Pathfinder pathfinder;
         protected Pathfinder Pathfinder => pathfinder ?? (pathfinder = FindObjectOfType<Pathfinder>());
-        
+
         [ContextMenu("Align to grid")]
         public void AlignToGrid() => transform.position = Pathfinder.GetWorldPosition(Position);
     }
