@@ -27,7 +27,7 @@ namespace Entities.Tile {
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
             var sideSize = smallestWidth / Mathf.Sqrt(3.0f);
 
-            gameObject.transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), 0.0f, (Position.y - Position.x * 0.5f) * smallestWidth);
+            gameObject.transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), height, (Position.y - Position.x * 0.5f) * smallestWidth);
             var scale = transform.localScale;
             scale.Set(1, height / 2f, 1);
             transform.localScale = scale;
