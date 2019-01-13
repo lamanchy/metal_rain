@@ -149,7 +149,7 @@ namespace Entities.Tile {
                 for (var y = -distance; y <= distance; y++) {
                     for (var z = -10; z < 11; z++) {
                         var key = new Vector3Int(Position.x + x, Position.y + y, z);
-                        if (Distance(key) > distance || Distance(key) == 0) {
+                        if (Distance(key) > distance) {
                             continue;
                         }
                         if (!Pathfinder.AllTiles.ContainsKey(key)) {

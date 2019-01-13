@@ -40,6 +40,7 @@ namespace Manager {
         }
 
         private void Start() {
+            target = source.CurrentTile;
             OnEnter(source.CurrentTile);
         }
 
@@ -48,9 +49,6 @@ namespace Manager {
 
             // Highlight visible tiles
             foreach (var tile in visibleTiles) {
-                if (tile == source.CurrentTile) {
-                    continue;
-                }
                 tile.SetHexColor(visibleHexColor);
             }
 
@@ -72,6 +70,7 @@ namespace Manager {
         }
 
         public void OnExit(TileEntity tile) {
+            target.SetHexColor(defaultHexColor);
             target = null;
             var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
             foreach (var visibleTile in path) {
