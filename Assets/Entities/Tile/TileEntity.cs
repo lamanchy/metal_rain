@@ -125,7 +125,7 @@ namespace Entities.Tile {
                     }
                 }
             }
-
+            result.Reverse();
             return result;
         }
 

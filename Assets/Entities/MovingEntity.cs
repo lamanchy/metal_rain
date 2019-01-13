@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Entities.Tile;
 using UnityEngine;
 
@@ -17,15 +18,13 @@ namespace Entities {
         }
 
         public void EnqueueInteraction(List<TileEntity> path) {
-            if (path[0].standingEntity != null) {
-                var target = path[0];
-                path.RemoveAt(0);
-                path.Reverse();
+            if (path.Last().standingEntity != null) {
+                var target = path.Last();
+                path.Remove(target);
                 PathQueue.AddRange(path);
                 actionQueue.Enqueue(new MoveAction(this, path));
                 actionQueue.Enqueue(new InteractAction(this, target));
             } else {
-                path.Reverse();
                 PathQueue.AddRange(path);
                 actionQueue.Enqueue(new MoveAction(this, path));
             }

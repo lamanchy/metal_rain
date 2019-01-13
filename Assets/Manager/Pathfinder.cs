@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Entities;
 using Entities.Tile;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Manager {
         private TileEntity target;
     
         private List<TileEntity> path = new List<TileEntity>();
+
 
         private Dictionary<Vector3Int, TileEntity> GetAllTiles() {
             var tiles = new Dictionary<Vector3Int, TileEntity>();
@@ -47,7 +49,7 @@ namespace Manager {
         public void OnDown() {
             if (target == null
              || path.Count == 0
-             || !source.CurrentTile.GetVisibleSurroundings(visibilityRange).Contains(target)) {
+             || PathGoesThroughFog()) {
                 return;
             }
 
@@ -62,6 +64,11 @@ namespace Manager {
         }
 
         public Vector3 GetWorldPosition(Vector3Int position) => AllTiles[position].transform.position;
+        
+        private bool PathGoesThroughFog() {
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
+            return path.Any(tile => !visibleTiles.Contains(tile));
+        }
 
         public void RepaintHexColors() {
             ClearHexColors();
@@ -79,8 +86,12 @@ namespace Manager {
             }
             
             // Draw selected path
+            var wentOutOfVisible = false;
             foreach (var tile in path) {
-                tile.SetHexColor(visibleTiles.Contains(tile) ? HexColors.path : HexColors.blocked);
+                if (!visibleTiles.Contains(tile)) {
+                    wentOutOfVisible = true;
+                }
+                tile.SetHexColor(wentOutOfVisible ? HexColors.blocked : HexColors.path);
             }
         }
 
