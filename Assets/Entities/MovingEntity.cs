@@ -17,17 +17,17 @@ namespace Entities {
         }
 
         public void EnqueueInteraction(List<TileEntity> path) {
-            var target = path[0].standingEntity;
-            if (target != null) {
+            if (path[0].standingEntity != null) {
+                var target = path[0];
                 path.RemoveAt(0);
-            }
-
-            path.Reverse();
-            PathQueue.AddRange(path);
-            actionQueue.Enqueue(new MoveAction(this, path));
-
-            if (target != null) {
+                path.Reverse();
+                PathQueue.AddRange(path);
+                actionQueue.Enqueue(new MoveAction(this, path));
                 actionQueue.Enqueue(new InteractAction(this, target));
+            } else {
+                path.Reverse();
+                PathQueue.AddRange(path);
+                actionQueue.Enqueue(new MoveAction(this, path));
             }
 
             if (!isExecutingActions) {
@@ -38,7 +38,13 @@ namespace Entities {
         private IEnumerator DequeueCoroutine() {
             isExecutingActions = true;
             while (actionQueue.Count != 0) {
-                yield return StartCoroutine(actionQueue.Dequeue().Execute());
+                var action = actionQueue.Dequeue();
+                yield return StartCoroutine(action.Execute());
+                if (action.HasBeenInterrupted) {
+                    actionQueue.Clear();
+                    PathQueue.Clear();
+                    break;
+                }
             }
             isExecutingActions = false;
         }
