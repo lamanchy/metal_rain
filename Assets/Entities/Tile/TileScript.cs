@@ -6,9 +6,12 @@ namespace Entities.Tile {
     public class TileScript : BaseEntity {
         private const int MAX_STEP = 1;
         private const int HEIGHT_OF_VISIBILITY = 1;
+
         public float elevation;
-        private TileScript group;
         public float height = 30f;
+
+        private TileScript group;
+
         private Pathfinder pathfinder;
         private MaterialPropertyBlock propertyBlock;
         private new Renderer renderer;
@@ -27,9 +30,9 @@ namespace Entities.Tile {
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
             var sideSize = smallestWidth / Mathf.Sqrt(3.0f);
 
-            gameObject.transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), 0.0f, (Position.y - Position.x * 0.5f) * smallestWidth);
+            transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), elevation, (Position.y - Position.x * 0.5f) * smallestWidth);
             var scale = transform.localScale;
-            scale.Set(1, height / 2f, 1);
+            scale.Set(1, height, 1);
             transform.localScale = scale;
         }
 
