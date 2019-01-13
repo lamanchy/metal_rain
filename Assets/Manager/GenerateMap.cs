@@ -19,7 +19,7 @@ public class GenerateMap : MonoBehaviour {
             parent = new GameObject("Tiles");
         }
 
-        foreach (var ts in FindObjectsOfType<TileScript>()) {
+        foreach (var ts in FindObjectsOfType<TileEntity>()) {
             DestroyImmediate(ts.gameObject);
         }
 
@@ -29,7 +29,7 @@ public class GenerateMap : MonoBehaviour {
                 var g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
                 g.transform.parent = parent.transform;
 
-                var tileScript = g.GetComponent<TileScript>();
+                var tileScript = g.GetComponent<TileEntity>();
                 var elevation = (Mathf.Pow(x - sqrtSize / 2, 2) + Mathf.Pow(y - sqrtSize / 2, 2)) / 100f;
                 //elevation = 1;
 
@@ -44,7 +44,7 @@ public class GenerateMap : MonoBehaviour {
             parent = new GameObject("Tiles");
         }
 
-        foreach (var ts in FindObjectsOfType<TileScript>()) {
+        foreach (var ts in FindObjectsOfType<TileEntity>()) {
             DestroyImmediate(ts.gameObject);
         }
 
@@ -99,35 +99,35 @@ public class GenerateMap : MonoBehaviour {
                 if (Math.Abs(levels.x) > 0.5f) {
                     var firstLayer = PrefabUtility.InstantiatePrefab(tile) as GameObject;
                     firstLayer.transform.parent = parent.transform;
-                    SetTileScriptData(firstLayer.GetComponent<TileScript>(), new Vector3Int(x, y + x / 2, 0), levels.x, levels.x);
+                    SetTileScriptData(firstLayer.GetComponent<TileEntity>(), new Vector3Int(x, y + x / 2, 0), levels.x, levels.x);
                 }
                 
                 // Create upper level
                 if (Math.Abs(levels.y - levels.z) > 0.5f && Math.Abs(levels.y) > 0.5f && Math.Abs(levels.z) > 0.5f) {
                     var secondLayer = PrefabUtility.InstantiatePrefab(tile) as GameObject;
                     secondLayer.transform.parent = parent.transform;
-                    SetTileScriptData(secondLayer.GetComponent<TileScript>(), new Vector3Int(x, y + x / 2, 1), levels.z, levels.z - levels.y);
+                    SetTileScriptData(secondLayer.GetComponent<TileEntity>(), new Vector3Int(x, y + x / 2, 1), levels.z, levels.z - levels.y);
                 }
             }
         }
     }
 
-    private void SetTileScriptData(TileScript tileScript, Vector3Int pos, float elevation, float height) {
-        tileScript.Position = pos;
-        tileScript.Elevation = elevation;
-        tileScript.Height = height;
+    private void SetTileScriptData(TileEntity tileEntity, Vector3Int pos, float elevation, float height) {
+        tileEntity.Position = pos;
+        tileEntity.Elevation = elevation;
+        tileEntity.Height = height;
         
         for (var i = hexVisualsData.Count - 1; i >= 0; --i) {
             if (elevation < hexVisualsData[i].startHeight) {
                 continue;
             }
             var randomVisual = hexVisualsData[i].items[Random.Range(0, hexVisualsData[i].items.Count)];
-            tileScript.SetSideMaterial(randomVisual.sidesMaterial);
-            tileScript.SetTopMaterial(randomVisual.topMaterial);
+            tileEntity.SetSideMaterial(randomVisual.sidesMaterial);
+            tileEntity.SetTopMaterial(randomVisual.topMaterial);
 
             break;
         }
 
-        tileScript.AlignToGrid();
+        tileEntity.AlignToGrid();
     }
 }

@@ -120,6 +120,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: {x: -2.3, y: 6, z: 0}
+  distance: 1
+  rotation: 0
 --- !u!114 &2585744991778580884
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Entities.Tile {
     [RequireComponent(typeof(MeshCollider))]
-    public class TileScript : BaseEntity {
+    public class TileEntity : BaseEntity {
         private const int MAX_STEP = 1;
         private const int HEIGHT_OF_VISIBILITY = 1;
 
@@ -13,7 +13,7 @@ namespace Entities.Tile {
 
         public BaseEntity standingEntity;
 
-        private TileScript group;
+        private TileEntity group;
 
         private MaterialPropertyBlock propertyBlock;
         private new Renderer renderer;
@@ -34,7 +34,7 @@ namespace Entities.Tile {
             transform.localScale = scale;
         }
 
-        private void SetGroup(TileScript groupToSet) {
+        private void SetGroup(TileEntity groupToSet) {
             if (group != null) {
                 return;
             }
@@ -77,58 +77,59 @@ namespace Entities.Tile {
 
         public Vector3 GetTop() => transform.position;
 
-        public List<TileScript> GetPathTo(TileScript target) {
-            var parent = new Dictionary<TileScript, TileScript>();
-            var traveled = new Dictionary<TileScript, int> { { this, 0 } };
-            var result = new List<TileScript>();
+        public List<TileEntity> GetPathTo(TileEntity target) {
+            var parent = new Dictionary<TileEntity, TileEntity>();
+            var traveled = new Dictionary<TileEntity, int> { { this, 0 } };
+            var result = new List<TileEntity>();
 
-            var toSearch = new SortedDictionary<int, List<TileScript>> { { Distance(target.Position), new List<TileScript> { this } } };
+            var toSearch = new SortedDictionary<int, List<TileEntity>> { { Distance(target.Position), new List<TileEntity> { this } } };
 
             SetGroup(this);
             target.SetGroup(target);
 
             while (toSearch.Count > 0) {
-                var enumerator = toSearch.Keys.GetEnumerator();
-                enumerator.MoveNext();
-                var currentDistance = enumerator.Current;
-                var randIndex = 0; // Random.Range(0, toSearch[currentDistance].Count);
+                using (var enumerator = toSearch.Keys.GetEnumerator()) {
+                    enumerator.MoveNext();
+                    var currentDistance = enumerator.Current;
+                    var randIndex = 0; // Random.Range(0, toSearch[currentDistance].Count);
 
-                var current = toSearch[currentDistance][randIndex];
-                toSearch[currentDistance].RemoveAt(randIndex);
-                if (toSearch[currentDistance].Count == 0) {
-                    toSearch.Remove(currentDistance);
-                }
-
-                if (current.group != null && target.group != null && current.group != target.group) {
-                    break;
-                }
-
-                if (current == target) {
-                    while (current != this) {
-                        result.Add(current);
-                        current = parent[current];
+                    var current = toSearch[currentDistance][randIndex];
+                    toSearch[currentDistance].RemoveAt(randIndex);
+                    if (toSearch[currentDistance].Count == 0) {
+                        toSearch.Remove(currentDistance);
                     }
-                    break;
-                }
 
-                foreach (var neighbour in current.GetNeighbours()) {
-                    if (parent.ContainsKey(neighbour)) {
-                        continue;
+                    if (current.group != null && target.group != null && current.group != target.group) {
+                        break;
                     }
-                    var distance = neighbour.Distance(target.Position) + traveled[current];
-                    if (!toSearch.ContainsKey(distance)) {
-                        toSearch[distance] = new List<TileScript>();
+
+                    if (current == target) {
+                        while (current != this) {
+                            result.Add(current);
+                            current = parent[current];
+                        }
+                        break;
                     }
-                    toSearch[distance].Add(neighbour);
-                    parent[neighbour] = current;
-                    traveled[neighbour] = traveled[current] + 1;
+
+                    foreach (var neighbour in current.GetNeighbours()) {
+                        if (parent.ContainsKey(neighbour)) {
+                            continue;
+                        }
+                        var distance = neighbour.Distance(target.Position) + traveled[current];
+                        if (!toSearch.ContainsKey(distance)) {
+                            toSearch[distance] = new List<TileEntity>();
+                        }
+                        toSearch[distance].Add(neighbour);
+                        parent[neighbour] = current;
+                        traveled[neighbour] = traveled[current] + 1;
+                    }
                 }
             }
 
             return result;
         }
 
-        public TileScript GetVisibleTile(TileScript tile) {
+        public TileEntity GetVisibleTile(TileEntity tile) {
             var layerMask = 1 << 9;
             var source = GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
             var destination = tile.GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
@@ -137,18 +138,18 @@ namespace Entities.Tile {
 
             RaycastHit hit;
             return Physics.Raycast(source, direction, out hit, dist, layerMask) 
-                ? hit.collider.gameObject.GetComponent<TileScript>() 
+                ? hit.collider.gameObject.GetComponent<TileEntity>() 
                 : tile;
         }
 
-        public List<TileScript> GetSurroundings(int distance = 1) {
-            var result = new List<TileScript>();
+        public List<TileEntity> GetSurroundings(int distance = 1) {
+            var result = new List<TileEntity>();
 
             for (var x = -distance; x <= distance; x++) {
                 for (var y = -distance; y <= distance; y++) {
                     for (var z = -10; z < 11; z++) {
                         var key = new Vector3Int(Position.x + x, Position.y + y, z);
-                        if (Distance(key) > distance || Distance(key) == 0) {
+                        if (Distance(key) > distance) {
                             continue;
                         }
                         if (!Pathfinder.AllTiles.ContainsKey(key)) {
@@ -163,14 +164,14 @@ namespace Entities.Tile {
             return result;
         }
 
-        public List<TileScript> GetVisibleSurroundings(int distance) {
-            return GetSurroundings(distance).Aggregate(new HashSet<TileScript>(), (tiles, tile) => {
+        public List<TileEntity> GetVisibleSurroundings(int distance) {
+            return GetSurroundings(distance).Aggregate(new HashSet<TileEntity>(), (tiles, tile) => {
                 tiles.Add(GetVisibleTile(tile));
                 return tiles;
             }).ToList();
         }
 
-        public List<TileScript> GetNeighbours() {
+        public List<TileEntity> GetNeighbours() {
             var result = GetSurroundings(1);
             result.RemoveAll(tile => Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
 

@@ -8,8 +8,27 @@ namespace Manager {
 
         public Vector3 offset;
 
+        private float distance = 1f;
+        private float rotation;
+
         private void Update() {
-            camera.transform.position = target.transform.position + offset;
+            camera.transform.position = target.transform.position + Quaternion.AngleAxis(rotation, Vector3.up) * offset * distance;
+            camera.transform.LookAt(target.transform);
+            
+            if (Input.GetKey(KeyCode.A)) {
+                rotation -= 1f;
+            }
+            if (Input.GetKey(KeyCode.D)) {
+                rotation += 1f;
+            }
+
+            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll < 0f) {
+                distance = Mathf.Min(distance - scroll, 3f);
+            }
+            if (scroll > 0f) {
+                distance = Mathf.Max(distance - scroll, 0.5f);
+            }
         }
     }
 }

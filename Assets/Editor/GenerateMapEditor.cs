@@ -33,8 +33,8 @@ public class GenerateMapEditor : Editor {
             return;
         }
         var dataAsJson = File.ReadAllText(GetMapPath());
-        var tiles = JsonUtility.FromJson<TileScript[]>(dataAsJson);
-        foreach (var ts in FindObjectsOfType<TileScript>()) {
+        var tiles = JsonUtility.FromJson<TileEntity[]>(dataAsJson);
+        foreach (var ts in FindObjectsOfType<TileEntity>()) {
             DestroyImmediate(ts.gameObject);
         }
         Debug.Log(tiles);
@@ -54,7 +54,7 @@ public class GenerateMapEditor : Editor {
         }
 
         var dataAsJson = "";
-        foreach (var ts in FindObjectsOfType<TileScript>()) {
+        foreach (var ts in FindObjectsOfType<TileEntity>()) {
             dataAsJson += JsonUtility.ToJson(ts);
         }
         Debug.Log(dataAsJson);
@@ -65,6 +65,6 @@ public class GenerateMapEditor : Editor {
 
     [Serializable]
     public class GameData {
-        public List<TileScript> tiles;
+        public List<TileEntity> tiles;
     }
 }
