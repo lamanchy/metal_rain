@@ -14,10 +14,10 @@ namespace Entities {
         public readonly List<TileEntity> InteractionQueue = new List<TileEntity>();
 
         public TileEntity DestinationTile => PathQueue.Count == 0 ? CurrentTile : PathQueue[PathQueue.Count - 1];
-        public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
+        public TileEntity CurrentTile => Pathfinder.AllTiles[position];
 
         private void Start() {
-            Pathfinder.AllTiles[Position].standingEntity = this;
+            Pathfinder.AllTiles[position].standingEntity = this;
         }
 
         public void EnqueueInteraction(List<TileEntity> path) {

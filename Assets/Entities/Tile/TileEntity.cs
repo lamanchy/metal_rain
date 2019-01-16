@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entities.Tile {
     [RequireComponent(typeof(MeshCollider))]
     public class TileEntity : BaseEntity {
-        private const int MAX_STEP = 1;
-        private const int HEIGHT_OF_VISIBILITY = 1;
+        private const int MaxStep = 1;
+        private const int HeightOfVisibility = 1;
 
-        public float Elevation;
-        public float Height;
+        public float elevation;
+        public float height;
 
         public BaseEntity standingEntity;
 
@@ -24,14 +25,14 @@ namespace Entities.Tile {
         }
 
         public new void AlignToGrid() {
-            var diameter = transform.localScale.x;
+            var localScale = transform.localScale;
+            var diameter = localScale.x;
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
             var sideSize = smallestWidth / Mathf.Sqrt(3.0f);
 
-            transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), Elevation, (Position.y - Position.x * 0.5f) * smallestWidth);
-            var scale = transform.localScale;
-            scale.Set(1, Height, 1);
-            transform.localScale = scale;
+            transform.position = new Vector3(position.x * ((diameter - sideSize) * 0.5f + sideSize), elevation, (position.y - position.x * 0.5f) * smallestWidth);
+            localScale.Set(1, height, 1);
+            transform.localScale = localScale;
         }
 
         private void SetGroup(TileEntity groupToSet) {
@@ -75,14 +76,14 @@ namespace Entities.Tile {
             GetComponent<Renderer>().sharedMaterials = mats;
         }
 
-        public Vector3 GetTop() => transform.position;
+        private Vector3 GetTop() => transform.position;
 
         public List<TileEntity> GetPathTo(TileEntity target) {
             var parent = new Dictionary<TileEntity, TileEntity>();
             var traveled = new Dictionary<TileEntity, int> { { this, 0 } };
             var result = new List<TileEntity>();
 
-            var toSearch = new SortedDictionary<int, List<TileEntity>> { { Distance(target.Position), new List<TileEntity> { this } } };
+            var toSearch = new SortedDictionary<int, List<TileEntity>> { { Distance(target.position), new List<TileEntity> { this } } };
 
             SetGroup(this);
             target.SetGroup(target);
@@ -91,7 +92,7 @@ namespace Entities.Tile {
                 using (var enumerator = toSearch.Keys.GetEnumerator()) {
                     enumerator.MoveNext();
                     var currentDistance = enumerator.Current;
-                    var randIndex = 0; // Random.Range(0, toSearch[currentDistance].Count);
+                    const int randIndex = 0; // Random.Range(0, toSearch[currentDistance].Count);
 
                     var current = toSearch[currentDistance][randIndex];
                     toSearch[currentDistance].RemoveAt(randIndex);
@@ -115,7 +116,7 @@ namespace Entities.Tile {
                         if (parent.ContainsKey(neighbour)) {
                             continue;
                         }
-                        var distance = neighbour.Distance(target.Position) + traveled[current];
+                        var distance = neighbour.Distance(target.position) + traveled[current];
                         if (!toSearch.ContainsKey(distance)) {
                             toSearch[distance] = new List<TileEntity>();
                         }
@@ -129,26 +130,25 @@ namespace Entities.Tile {
             return result;
         }
 
-        public TileEntity GetVisibleTile(TileEntity tile) {
-            var layerMask = 1 << 9;
-            var source = GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
-            var destination = tile.GetTop() + new Vector3(0, HEIGHT_OF_VISIBILITY, 0);
+        private TileEntity GetVisibleTile(TileEntity tile) {
+            const int layerMask = 1 << 9;
+            var source = GetTop() + new Vector3(0, HeightOfVisibility, 0);
+            var destination = tile.GetTop() + new Vector3(0, HeightOfVisibility, 0);
             var direction = destination - source;
             var dist = Vector3.Distance(source, destination);
 
-            RaycastHit hit;
-            return Physics.Raycast(source, direction, out hit, dist, layerMask) 
+            return Physics.Raycast(source, direction, out var hit, dist, layerMask) 
                 ? hit.collider.gameObject.GetComponent<TileEntity>() 
                 : tile;
         }
 
-        public List<TileEntity> GetSurroundings(int distance = 1) {
+        private List<TileEntity> GetSurroundings(int distance = 1) {
             var result = new List<TileEntity>();
 
             for (var x = -distance; x <= distance; x++) {
                 for (var y = -distance; y <= distance; y++) {
                     for (var z = -10; z < 11; z++) {
-                        var key = new Vector3Int(Position.x + x, Position.y + y, z);
+                        var key = new Vector3Int(position.x + x, position.y + y, z);
                         if (Distance(key) > distance) {
                             continue;
                         }
@@ -171,7 +171,7 @@ namespace Entities.Tile {
             }).ToList();
         }
 
-        public List<TileEntity> GetNeighbours() {
+        private IEnumerable<TileEntity> GetNeighbours() {
             var result = GetSurroundings(1);
             result.RemoveAll(tile => Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
 
@@ -179,9 +179,9 @@ namespace Entities.Tile {
         }
 
         private int Distance(Vector3Int otherPos) => (
-                                                         Mathf.Abs(Position.x - otherPos.x) +
-                                                         Mathf.Abs(Position.y - otherPos.y) +
-                                                         Mathf.Abs(Position.x - Position.y - (otherPos.x - otherPos.y))
+                                                         Mathf.Abs(position.x - otherPos.x) +
+                                                         Mathf.Abs(position.y - otherPos.y) +
+                                                         Mathf.Abs(position.x - position.y - (otherPos.x - otherPos.y))
                                                      ) / 2;
     }
 }

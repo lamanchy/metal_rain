@@ -21,10 +21,10 @@ namespace Manager {
         private Dictionary<Vector3Int, TileEntity> GetAllTiles() {
             var tiles = new Dictionary<Vector3Int, TileEntity>();
             foreach (var tile in FindObjectsOfType<TileEntity>()) {
-                if (tiles.ContainsKey(tile.Position)) {
-                    throw new Exception("Repeating position of tile..." + tile.Position);
+                if (tiles.ContainsKey(tile.position)) {
+                    throw new Exception("Repeating position of tile..." + tile.position);
                 }
-                tiles[tile.Position] = tile;
+                tiles[tile.position] = tile;
             }
             return tiles;
         }

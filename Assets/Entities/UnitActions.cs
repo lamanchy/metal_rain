@@ -35,8 +35,8 @@ namespace Entities {
                     movingEntity.transform.position = Vector3.Lerp(startingPosition, destinationPosition, i);
                     yield return null;
                 }
-                movingEntity.Pathfinder.AllTiles[movingEntity.Position].standingEntity = null;
-                movingEntity.Position = tile.Position;
+                movingEntity.Pathfinder.AllTiles[movingEntity.position].standingEntity = null;
+                movingEntity.position = tile.position;
                 movingEntity.PathQueue.Remove(tile);
             }
         }
