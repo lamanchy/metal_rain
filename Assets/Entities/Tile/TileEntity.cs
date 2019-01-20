@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Manager;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Entities.Tile {
     [RequireComponent(typeof(MeshCollider))]
-    public class TileEntity : BaseEntity {
+    public class TileEntity : MonoBehaviour {
         private const int MaxStep = 1;
         private const int HeightOfVisibility = 1;
+
+        public Vector3Int Position;
 
         public float elevation;
         public float height;
@@ -18,6 +21,9 @@ namespace Entities.Tile {
 
         private MaterialPropertyBlock propertyBlock;
         private new Renderer renderer;
+
+        private Pathfinder pathfinder;
+        public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
 
         private void Awake() {
             renderer = GetComponent<Renderer>();

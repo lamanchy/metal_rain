@@ -78,7 +78,6 @@ namespace Manager {
 
         private List<Image> AddAction(List<Image> items, IUnitAction action) {
             var image = Instantiate(queueItemPrefab, EnergyBar.rectTransform).GetComponent<Image>();
-            Debug.Log(items.Count);
             image.rectTransform.Translate(GetItemOffset(items.Count), 0, 0);
             image.color = action.color;
             items.Add(image);

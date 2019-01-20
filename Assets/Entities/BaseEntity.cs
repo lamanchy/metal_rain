@@ -9,9 +9,13 @@ namespace Entities {
     public class BaseEntity : MonoBehaviour {
         public Vector3Int Position;
         
+        [Header("Base stats")]
         public float Energy;
         public int MaxEnergy;
         public int EnergyPerSecond;
+
+        [Header("Base prefabs")]
+        public GameObject transferLightningPrefab;
 
         public float EnergyPerTick => EnergyPerSecond / 60f;
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DigitalRuby.LightningBolt;
 using Entities.Tile;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Entities {
 
         private bool isExecutingActions;
         
+        [Header("Moving entity stats")]
         public float baseMoveSpeed = 3;
         // TODO Apply terrain modifiers
         public float MoveSpeedModifier => baseMoveSpeed;
@@ -80,11 +82,15 @@ namespace Entities {
         public override IEnumerator Interact(BaseEntity otherEntity) {
             Debug.Log("Transfer started");
             var originalPosition = otherEntity.Position;
+            var lightning = Instantiate(transferLightningPrefab).GetComponent<LightningBoltScript>();
+            lightning.StartObject = gameObject;
+            lightning.EndObject = otherEntity.gameObject;
             while (actionQueue.Count == 0 && IsPowered && otherEntity.Position == originalPosition) {
                 transferEnergy(EnergyTransferPerTick, otherEntity);
                 yield return null;
             }
             otherEntity.PowerUpCheck();
+            Destroy(lightning.gameObject);
             Debug.Log("Transfer ended");
         }
     }
