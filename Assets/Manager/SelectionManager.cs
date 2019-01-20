@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using System;
+using Entities;
 using UnityEngine;
 
 namespace Manager {
@@ -8,11 +9,13 @@ namespace Manager {
 
         public MovingEntity CurrentTarget => Entities[index];
 
-        private Pathfinder pathfinder => gameObject.GetComponent<Pathfinder>();
+        private Pathfinder pathfinder => GetComponent<Pathfinder>();
+        private CanvasManager canvasManager => GetComponent<CanvasManager>();
 
         private void Update() {
             for (var i = 0; i < Entities.Length; ++i) {
                 if (Input.GetKeyDown((i + 1).ToString())) {
+                    canvasManager.SelectionChanged(index, i);
                     index = i;
                     pathfinder.RepaintHexColors();
                 }

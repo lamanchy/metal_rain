@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,19 +10,33 @@ namespace Manager {
         private static Color BarColorNormal = new Color(0.08f, 0.44f, 0.45f);
         private static Color BarColorDanger = new Color(0.45f, 0.08f, 0.33f);
 
-        private Text energyBarText;
-        public Text EnergyBarText => energyBarText ?? (energyBarText = GameObject.Find("EnergyBarText").GetComponent<Text>());
+        private const float queueItemOffset = 75f;
+
+        public GameObject queueItemPrefab;
+
+        private Image energyBar;
+        public Image EnergyBar => energyBar ?? (energyBar = GameObject.Find("EnergyBar").GetComponent<Image>());
+
+        private Image energyBarBackground;
+        public Image EnergyBarBackground => energyBarBackground ?? (energyBarBackground = GameObject.Find("EnergyBarBackground").GetComponent<Image>());
 
         private Image energyBarFill;
         public Image EnergyBarFill => energyBarFill ?? (energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>());
 
-        private Image energyBarBackground;
-        public Image EnergyBarBackground => energyBarBackground ?? (energyBarBackground = GameObject.Find("EnergyBarBackground").GetComponent<Image>());
+        private Text energyBarText;
+        public Text EnergyBarText => energyBarText ?? (energyBarText = GameObject.Find("EnergyBarText").GetComponent<Text>());
 
         private SelectionManager selectionManager;
         public SelectionManager SelectionManager => selectionManager ?? (selectionManager = GetComponent<SelectionManager>());
 
         public MovingEntity CurrentTarget => SelectionManager.CurrentTarget;
+
+        private List<Image> queueItems = new List<Image>();
+
+        private void Start() {
+            SelectionManager.CurrentTarget.OnActionEnqueue += ActionEnqueued;
+            SelectionManager.CurrentTarget.OnActionDequeue += ActionDequeued;
+        }
 
         private void Update() {
             EnergyBarText.text = $"{Format(CurrentTarget.Energy)} / {Format(CurrentTarget.MaxEnergy)} ({CurrentTarget.EnergyPerSecond}/s)";
@@ -36,6 +52,39 @@ namespace Manager {
             }
         }
 
-        private string Format(float number) => $"{number:n0}";
+        public void SelectionChanged(int previous, int next) {
+            var previousEntity = SelectionManager.Entities[previous];
+            previousEntity.OnActionEnqueue -= ActionEnqueued;
+            previousEntity.OnActionDequeue -= ActionDequeued;
+
+            queueItems.ForEach(item => Destroy(item.gameObject));
+
+            var nextEntity = SelectionManager.Entities[next];
+            nextEntity.OnActionEnqueue += ActionEnqueued;
+            nextEntity.OnActionDequeue += ActionDequeued;
+
+            queueItems = nextEntity.ActionQueue.Aggregate(new List<Image>(), AddAction);
+        }
+
+        private static float GetItemOffset(int itemsCount) => queueItemOffset * itemsCount;
+
+        private void ActionEnqueued(IUnitAction action) => AddAction(queueItems, action);
+
+        private void ActionDequeued(IUnitAction action) {
+            Destroy(queueItems[0].gameObject);
+            queueItems.RemoveAt(0);
+            queueItems.ForEach(item => item.rectTransform.Translate(-queueItemOffset, 0 ,0));
+        }
+
+        private List<Image> AddAction(List<Image> items, IUnitAction action) {
+            var image = Instantiate(queueItemPrefab, EnergyBar.rectTransform).GetComponent<Image>();
+            Debug.Log(items.Count);
+            image.rectTransform.Translate(GetItemOffset(items.Count), 0, 0);
+            image.color = action.color;
+            items.Add(image);
+            return items;
+        }
+
+        private static string Format(float number) => $"{number:n0}";
     }
 }

@@ -157,3 +157,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf5b747613852e42b713f258030c80e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  queueItemPrefab: {fileID: 7868416595756367663, guid: c38fc610c8c32784eb843a15d1421f5f,
+    type: 3}

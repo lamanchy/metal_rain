@@ -7,12 +7,15 @@ using UnityEngine;
 namespace Entities {
     public interface IUnitAction {
         bool HasBeenInterrupted { get; }
+        Color color { get; }
         IEnumerator Execute();
     }
 
     public class MoveAction : IUnitAction {
         private readonly MovingEntity movingEntity;
         private readonly List<TileEntity> path;
+
+        public Color color => HexColors.movement;
 
         public bool HasBeenInterrupted { get; private set; }
 
@@ -49,6 +52,8 @@ namespace Entities {
     public class InteractAction : IUnitAction {
         private readonly MovingEntity movingEntity;
         private readonly TileEntity target;
+        
+        public Color color => HexColors.interaction;
         
         public bool HasBeenInterrupted { get; private set; }
 

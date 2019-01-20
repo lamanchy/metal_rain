@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Entities.Tile;
@@ -9,6 +10,10 @@ namespace Entities {
         private const float EnergyTransferPerTick = 1000;
 
         private readonly Queue<IUnitAction> actionQueue = new Queue<IUnitAction>();
+        public IReadOnlyCollection<IUnitAction> ActionQueue => actionQueue;
+
+        public event Action<IUnitAction> OnActionEnqueue;
+        public event Action<IUnitAction> OnActionDequeue;
 
         private bool isExecutingActions;
         
@@ -26,19 +31,24 @@ namespace Entities {
             Pathfinder.AllTiles[Position].standingEntity = this;
         }
 
+        private void EnqueueAction(IUnitAction action) {
+            actionQueue.Enqueue(action);
+            OnActionEnqueue?.Invoke(action);
+        }
+
         public void EnqueueInteraction(List<TileEntity> path) {
             if (path.Last().standingEntity != null) {
                 var target = path.Last();
                 path.Remove(target);
                 if (path.Count > 0) {
                     PathQueue.AddRange(path);
-                    actionQueue.Enqueue(new MoveAction(this, path));
+                    EnqueueAction(new MoveAction(this, path));
                 }
                 InteractionQueue.Add(target);
-                actionQueue.Enqueue(new InteractAction(this, target));
+                EnqueueAction(new InteractAction(this, target));
             } else {
                 PathQueue.AddRange(path);
-                actionQueue.Enqueue(new MoveAction(this, path));
+                EnqueueAction(new MoveAction(this, path));
             }
 
             if (!isExecutingActions) {
@@ -52,7 +62,11 @@ namespace Entities {
                 var action = actionQueue.Dequeue();
                 Debug.Log(action);
                 yield return StartCoroutine(action.Execute());
+                OnActionDequeue?.Invoke(action);
                 if (action.HasBeenInterrupted) {
+                    for (var i = 0; i < actionQueue.Count; ++i) {
+                        OnActionDequeue?.Invoke(null);
+                    }
                     actionQueue.Clear();
                     PathQueue.Clear();
                     InteractionQueue.Clear();

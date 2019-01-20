@@ -83,7 +83,7 @@ namespace Manager {
 
             // Draw queued path
             foreach (var tile in source.PathQueue) {
-                tile.SetHexColor(HexColors.queued);
+                tile.SetHexColor(HexColors.movement);
             }
 
             // Draw queued interactions
