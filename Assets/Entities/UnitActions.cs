@@ -6,26 +6,28 @@ using UnityEngine;
 
 namespace Entities {
     public interface IUnitAction {
-        bool HasBeenInterrupted { get; }
+        bool HasBeenInterrupted { get; set; }
         Color color { get; }
         IEnumerator Execute();
+
+        void SetHexColors();
     }
 
     public class MoveAction : IUnitAction {
         private readonly MovingEntity movingEntity;
-        private readonly List<TileEntity> path;
+        public readonly List<TileEntity> Path;
 
         public Color color => HexColors.movement;
 
-        public bool HasBeenInterrupted { get; private set; }
+        public bool HasBeenInterrupted { get; set; }
 
         public MoveAction(MovingEntity movingEntity, List<TileEntity> path) {
             this.movingEntity = movingEntity;
-            this.path = path;
+            this.Path = path;
         }
 
         public IEnumerator Execute() {
-            foreach (var tile in path) {
+            foreach (var tile in Path) {
                 if (tile.standingEntity != null) {
                     Debug.Log("Path blocked;");
                     HasBeenInterrupted = true;
@@ -39,12 +41,22 @@ namespace Entities {
                     while (!movingEntity.IsPowered) {
                         yield return null;
                     }
+                    if (HasBeenInterrupted) {
+                        // TODO better solve cancelling of movement mid transfer
+                        movingEntity.transform.position = startingPosition;
+                        yield break;
+                    }
                     movingEntity.transform.position = Vector3.Lerp(startingPosition, destinationPosition, i);
                     yield return null;
                 }
                 movingEntity.Pathfinder.AllTiles[movingEntity.Position].standingEntity = null;
                 movingEntity.Position = tile.Position;
-                movingEntity.PathQueue.Remove(tile);
+            }
+        }
+
+        public void SetHexColors() {
+            foreach (var tile in Path) {
+                tile.SetHexColor(color);
             }
         }
     }
@@ -55,7 +67,7 @@ namespace Entities {
         
         public Color color => HexColors.interaction;
         
-        public bool HasBeenInterrupted { get; private set; }
+        public bool HasBeenInterrupted { get; set; }
 
         public InteractAction(MovingEntity movingEntity, TileEntity target) {
             this.movingEntity = movingEntity;
@@ -72,8 +84,11 @@ namespace Entities {
                 yield break;
             }
             yield return movingEntity.Interact(target.standingEntity);
-            movingEntity.InteractionQueue.Remove(target);
             yield return null;
+        }
+
+        public void SetHexColors() {
+            target.SetHexColor(color);
         }
     }
 }

@@ -70,10 +70,12 @@ namespace Manager {
 
         private void ActionEnqueued(IUnitAction action) => AddAction(queueItems, action);
 
-        private void ActionDequeued(IUnitAction action) {
-            Destroy(queueItems[0].gameObject);
-            queueItems.RemoveAt(0);
-            queueItems.ForEach(item => item.rectTransform.Translate(-queueItemOffset, 0 ,0));
+        private void ActionDequeued(int index) {
+            for (int i = index + 1; i < queueItems.Count; ++i) {
+                queueItems[i].rectTransform.Translate(-queueItemOffset, 0, 0);
+            }
+            Destroy(queueItems[index].gameObject);
+            queueItems.RemoveAt(index);
         }
 
         private List<Image> AddAction(List<Image> items, IUnitAction action) {

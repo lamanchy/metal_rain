@@ -20,6 +20,14 @@ namespace Manager {
                     pathfinder.RepaintHexColors();
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.S)) {
+                CurrentTarget.Interrupt();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                CurrentTarget.CancelLastAction();
+            }
         }
     }
 }

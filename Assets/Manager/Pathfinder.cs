@@ -81,14 +81,9 @@ namespace Manager {
                 tile.SetHexColor(HexColors.visible);
             }
 
-            // Draw queued path
-            foreach (var tile in source.PathQueue) {
-                tile.SetHexColor(HexColors.movement);
-            }
-
-            // Draw queued interactions
-            foreach (var tile in source.InteractionQueue) {
-                tile.SetHexColor(HexColors.interaction);
+            // Draw queued actions
+            foreach (var action in source.ActionQueue) {
+                action.SetHexColors();
             }
             
             // Draw selected path
