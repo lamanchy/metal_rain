@@ -61,9 +61,10 @@ namespace Entities {
         private IEnumerator DequeueCoroutine() {
             isExecutingActions = true;
             while (actionQueue.Count != 0) {
-                var action = actionQueue.Dequeue();
+                var action = actionQueue.Peek();
                 Debug.Log(action);
                 yield return StartCoroutine(action.Execute());
+                actionQueue.Dequeue();
                 OnActionDequeue?.Invoke(action);
                 if (action.HasBeenInterrupted) {
                     for (var i = 0; i < actionQueue.Count; ++i) {
@@ -85,7 +86,7 @@ namespace Entities {
             var lightning = Instantiate(transferLightningPrefab).GetComponent<LightningBoltScript>();
             lightning.StartObject = gameObject;
             lightning.EndObject = otherEntity.gameObject;
-            while (actionQueue.Count == 0 && IsPowered && otherEntity.Position == originalPosition) {
+            while (actionQueue.Count <= 1 && IsPowered && otherEntity.Position == originalPosition) {
                 transferEnergy(EnergyTransferPerTick, otherEntity);
                 yield return null;
             }

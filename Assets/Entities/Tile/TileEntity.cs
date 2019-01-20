@@ -30,7 +30,7 @@ namespace Entities.Tile {
             propertyBlock = new MaterialPropertyBlock();
         }
 
-        public new void AlignToGrid() {
+        public void AlignToGrid() {
             var localScale = transform.localScale;
             var diameter = localScale.x;
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
