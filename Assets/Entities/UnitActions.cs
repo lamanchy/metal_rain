@@ -31,12 +31,16 @@ namespace Entities {
                 tile.standingEntity = movingEntity;
                 var startingPosition = movingEntity.transform.position;
                 var destinationPosition = tile.transform.position;
-                for (var i = 0f; i < 1f; i += 0.03f) {
+                var moveSpeed = movingEntity.MoveSpeedModifier / 1000f;
+                for (var i = 0f; i < 1f; i += moveSpeed) {
+                    while (!movingEntity.IsPowered) {
+                        yield return null;
+                    }
                     movingEntity.transform.position = Vector3.Lerp(startingPosition, destinationPosition, i);
                     yield return null;
                 }
-                movingEntity.Pathfinder.AllTiles[movingEntity.position].standingEntity = null;
-                movingEntity.position = tile.position;
+                movingEntity.Pathfinder.AllTiles[movingEntity.Position].standingEntity = null;
+                movingEntity.Position = tile.Position;
                 movingEntity.PathQueue.Remove(tile);
             }
         }
@@ -54,12 +58,15 @@ namespace Entities {
         }
 
         public IEnumerator Execute() {
+            while (!movingEntity.IsPowered) {
+                yield return null;
+            }
             if (target.standingEntity == null) {
                 Debug.Log("Target is gone.");
                 HasBeenInterrupted = true;
                 yield break;
             }
-            target.standingEntity.Interact(movingEntity);
+            yield return movingEntity.Interact(target.standingEntity);
             movingEntity.InteractionQueue.Remove(target);
             yield return null;
         }

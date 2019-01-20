@@ -30,7 +30,7 @@ namespace Entities.Tile {
             var smallestWidth = Mathf.Sqrt(3.0f) * 0.5f * diameter;
             var sideSize = smallestWidth / Mathf.Sqrt(3.0f);
 
-            transform.position = new Vector3(position.x * ((diameter - sideSize) * 0.5f + sideSize), elevation, (position.y - position.x * 0.5f) * smallestWidth);
+            transform.position = new Vector3(Position.x * ((diameter - sideSize) * 0.5f + sideSize), elevation, (Position.y - Position.x * 0.5f) * smallestWidth);
             localScale.Set(1, height, 1);
             transform.localScale = localScale;
         }
@@ -83,7 +83,7 @@ namespace Entities.Tile {
             var traveled = new Dictionary<TileEntity, int> { { this, 0 } };
             var result = new List<TileEntity>();
 
-            var toSearch = new SortedDictionary<int, List<TileEntity>> { { Distance(target.position), new List<TileEntity> { this } } };
+            var toSearch = new SortedDictionary<int, List<TileEntity>> { { Distance(target.Position), new List<TileEntity> { this } } };
 
             SetGroup(this);
             target.SetGroup(target);
@@ -116,7 +116,7 @@ namespace Entities.Tile {
                         if (parent.ContainsKey(neighbour)) {
                             continue;
                         }
-                        var distance = neighbour.Distance(target.position) + traveled[current];
+                        var distance = neighbour.Distance(target.Position) + traveled[current];
                         if (!toSearch.ContainsKey(distance)) {
                             toSearch[distance] = new List<TileEntity>();
                         }
@@ -148,7 +148,7 @@ namespace Entities.Tile {
             for (var x = -distance; x <= distance; x++) {
                 for (var y = -distance; y <= distance; y++) {
                     for (var z = -10; z < 11; z++) {
-                        var key = new Vector3Int(position.x + x, position.y + y, z);
+                        var key = new Vector3Int(Position.x + x, Position.y + y, z);
                         if (Distance(key) > distance) {
                             continue;
                         }
@@ -179,9 +179,9 @@ namespace Entities.Tile {
         }
 
         private int Distance(Vector3Int otherPos) => (
-                                                         Mathf.Abs(position.x - otherPos.x) +
-                                                         Mathf.Abs(position.y - otherPos.y) +
-                                                         Mathf.Abs(position.x - position.y - (otherPos.x - otherPos.y))
+                                                         Mathf.Abs(Position.x - otherPos.x) +
+                                                         Mathf.Abs(Position.y - otherPos.y) +
+                                                         Mathf.Abs(Position.x - Position.y - (otherPos.x - otherPos.y))
                                                      ) / 2;
     }
 }

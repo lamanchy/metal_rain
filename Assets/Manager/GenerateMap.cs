@@ -114,7 +114,7 @@ namespace Manager {
         }
 
         private void SetTileScriptData(TileEntity tileEntity, Vector3Int pos, float elevation, float height) {
-            tileEntity.position = pos;
+            tileEntity.Position = pos;
             tileEntity.elevation = elevation;
             tileEntity.height = height;
         
