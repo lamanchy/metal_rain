@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Manager;
 using UnityEngine;
 
@@ -21,14 +22,14 @@ namespace Entities {
         public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
 
         public void PowerDownCheck() {
-            if ((int)Energy == 0) {
+            if (Math.Abs(Energy) < 0.1f) {
                 IsPowered = false;
                 PowerDown();
             }
         }
 
         public void PowerUpCheck() {
-            if (Energy > 0) {
+            if (Energy > 0.1f) {
                 IsPowered = true;
                 PowerUp();
             }
