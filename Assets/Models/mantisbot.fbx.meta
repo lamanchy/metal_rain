@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ae5a71d4e64ca3f4cadf5a30b7dd156b
+guid: 6591b5374e2c04f42905bae6d0326a7a
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -8,7 +8,7 @@ ModelImporter:
     2100000: No Name
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Snailbot
+    4300000: Mantisbot
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -40,7 +40,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.35
+    globalScale: 0.2
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
