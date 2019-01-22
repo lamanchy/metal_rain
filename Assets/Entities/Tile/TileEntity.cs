@@ -179,7 +179,7 @@ namespace Entities.Tile {
 
         private IEnumerable<TileEntity> GetNeighbours() {
             var result = GetSurroundings(1);
-            result.RemoveAll(tile => Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
+            result.RemoveAll(tile => tile.standingEntity != null || Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
 
             return result;
         }
