@@ -94,6 +94,7 @@ namespace Entities.Tile {
             SetGroup(this);
             target.SetGroup(target);
 
+            var isOdd = true;
             while (toSearch.Count > 0) {
                 using (var enumerator = toSearch.Keys.GetEnumerator()) {
                     enumerator.MoveNext();
@@ -117,8 +118,8 @@ namespace Entities.Tile {
                         }
                         break;
                     }
-
-                    foreach (var neighbour in current.GetNeighbours()) {
+                    
+                    foreach (var neighbour in isOdd ? current.GetNeighbours().Reverse() : current.GetNeighbours()) {
                         if (parent.ContainsKey(neighbour)) {
                             continue;
                         }
@@ -130,6 +131,7 @@ namespace Entities.Tile {
                         parent[neighbour] = current;
                         traveled[neighbour] = traveled[current] + 1;
                     }
+                    isOdd = !isOdd;
                 }
             }
             result.Reverse();
