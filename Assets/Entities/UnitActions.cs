@@ -29,7 +29,7 @@ namespace Entities {
         public IEnumerator Execute() {
             foreach (var tile in Path) {
                 if (tile.standingEntity != null) {
-                    Debug.Log("Path blocked;");
+                    Debug.Log("Path blocked.");
                     HasBeenInterrupted = true;
                     yield break;
                 }
@@ -64,14 +64,16 @@ namespace Entities {
     public class InteractAction : IUnitAction {
         private readonly MovingEntity movingEntity;
         private readonly TileEntity target;
-        
+        private readonly bool isPrimary;
+
         public Color color => HexColors.interaction;
         
         public bool HasBeenInterrupted { get; set; }
 
-        public InteractAction(MovingEntity movingEntity, TileEntity target) {
+        public InteractAction(MovingEntity movingEntity, TileEntity target, bool isPrimary) {
             this.movingEntity = movingEntity;
             this.target = target;
+            this.isPrimary = isPrimary;
         }
 
         public IEnumerator Execute() {
@@ -83,7 +85,39 @@ namespace Entities {
                 HasBeenInterrupted = true;
                 yield break;
             }
-            yield return movingEntity.Interact(target.standingEntity);
+            yield return movingEntity.Interact(target.standingEntity, isPrimary);
+        }
+
+        public void SetHexColors() {
+            target.SetHexColor(color);
+        }
+    }
+
+    public class BuildAction : IUnitAction {
+        private readonly MovingEntity movingEntity;
+        private readonly TileEntity target;
+        private readonly GameObject buildPrefab;
+
+        public Color color => HexColors.build;
+
+        public bool HasBeenInterrupted { get; set; }
+
+        public BuildAction(MovingEntity movingEntity, TileEntity target, GameObject buildPrefab) {
+            this.movingEntity = movingEntity;
+            this.target = target;
+            this.buildPrefab = buildPrefab;
+        }
+
+        public IEnumerator Execute() {
+            if (target.standingEntity != null) {
+                Debug.Log("Can't build on occupied tile.");
+                HasBeenInterrupted = true;
+                yield break;
+            }
+            var building = GameObject.Instantiate(buildPrefab).GetComponent<StaticEntity>();
+            building.Position = target.Position;
+            building.AlignToGrid();
+            // target.standingEntity = building;
             yield return null;
         }
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Entities {
     public class MovingEntity : BaseEntity {
-        private const float EnergyTransferPerTick = 1000;
+        private const float EnergyTransferPerTick = 100;
 
         private readonly List<IUnitAction> actionQueue = new List<IUnitAction>();
         public IReadOnlyCollection<IUnitAction> ActionQueue => actionQueue;
@@ -26,26 +26,40 @@ namespace Entities {
         public TileEntity DestinationTile => GetDestinationTile();
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
 
-        private void Start() {
-            Pathfinder.AllTiles[Position].standingEntity = this;
-        }
-
         private void EnqueueAction(IUnitAction action) {
             actionQueue.Add(action);
             OnActionEnqueue?.Invoke(action);
         }
 
-        public void EnqueueInteraction(List<TileEntity> path) {
+        public void EnqueueInteraction(List<TileEntity> path, bool isPrimary) {
             if (path.Last().standingEntity != null) {
                 var target = path.Last();
                 path.Remove(target);
                 if (path.Count > 0) {
                     EnqueueAction(new MoveAction(this, path));
                 }
-                EnqueueAction(new InteractAction(this, target));
+                EnqueueAction(new InteractAction(this, target, isPrimary));
             } else {
                 EnqueueAction(new MoveAction(this, path));
             }
+
+            if (!isExecutingActions) {
+                StartCoroutine(DequeueCoroutine());
+            }
+        }
+
+        public void EnqueueBuild(List<TileEntity> path, GameObject prefab) {
+            if (path.Last().standingEntity != null) {
+                Debug.Log("Can't build on occupied tile.");
+                return;
+            }
+            
+            var target = path.Last();
+            path.Remove(target);
+            if (path.Count > 0) {
+                EnqueueAction(new MoveAction(this, path));
+            }
+            EnqueueAction(new BuildAction(this, target, prefab));
 
             if (!isExecutingActions) {
                 StartCoroutine(DequeueCoroutine());
@@ -68,14 +82,18 @@ namespace Entities {
             isExecutingActions = false;
         }
 
-        public override IEnumerator Interact(BaseEntity otherEntity) {
+        public IEnumerator Interact(BaseEntity otherEntity, bool isPrimary) {
             Debug.Log("Transfer started");
             var originalPosition = otherEntity.Position;
             var lightning = Instantiate(transferLightningPrefab).GetComponent<LightningBoltScript>();
             lightning.StartObject = gameObject;
             lightning.EndObject = otherEntity.gameObject;
-            while (actionQueue.Count <= 1 && IsPowered && otherEntity.Position == originalPosition && !actionQueue.First().HasBeenInterrupted) {
-                transferEnergy(EnergyTransferPerTick, otherEntity);
+            while (actionQueue.Count <= 1 
+                && IsPowered 
+                && (isPrimary || otherEntity.IsPowered)
+                && otherEntity.Position == originalPosition 
+                && !actionQueue.First().HasBeenInterrupted) {
+                transferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
                 yield return null;
             }
             otherEntity.PowerUpCheck();

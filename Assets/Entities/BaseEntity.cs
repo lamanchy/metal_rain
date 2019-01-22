@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using Manager;
 using UnityEngine;
 
@@ -25,6 +24,10 @@ namespace Entities {
         private Pathfinder pathfinder;
         public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
 
+        private void Start() {
+            Pathfinder.AllTiles[Position].standingEntity = this;
+        }
+
         public void PowerDownCheck() {
             if (Math.Abs(Energy) < 0.1f) {
                 IsPowered = false;
@@ -48,20 +51,28 @@ namespace Entities {
             PowerDownCheck();
         }
 
-        protected void transferEnergy(float ammount, BaseEntity target) {
-            if (ammount > Energy) {
-                ammount = Energy;
+        protected void transferEnergy(float amount, BaseEntity target) {
+            if (amount >= 0) {
+                // Giving energy
+                if (amount > Energy) {
+                    amount = Energy;
+                }
+                if (target.MaxEnergy - target.Energy < amount) {
+                    amount = target.MaxEnergy - target.Energy;
+                }
+            } else {
+                // Receiving energy
+                if (Math.Abs(amount) > target.Energy) {
+                    amount = -target.Energy;
+                }
+                if (MaxEnergy - Energy < Math.Abs(amount)) {
+                    amount = Energy - MaxEnergy;
+                }
             }
-            if (target.MaxEnergy - target.Energy < ammount) {
-                ammount = target.MaxEnergy - target.Energy;
-            }
-            target.Energy += ammount;
-            Energy -= ammount;
+            target.Energy += amount;
+            Energy -= amount;
             PowerDownCheck();
-        }
-
-        public virtual IEnumerator Interact(BaseEntity otherEntity) {
-            return null;
+            target.PowerDownCheck();
         }
 
         protected virtual void PowerDown() {}

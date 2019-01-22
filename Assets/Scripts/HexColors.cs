@@ -8,4 +8,5 @@ public static class HexColors {
 
     public static Color movement => new Color(0.25f, 0.24f, 0.6f, 0.75f);
     public static Color interaction => new Color(0.59f, 0.6f, 0.24f, 0.75f);
+    public static Color build => new Color(0.24f, 0.57f, 0.6f, 0.75f);
 }

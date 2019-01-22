@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2585744991778580884}
   - component: {fileID: 3909984064834936048}
   - component: {fileID: 894093685790490996}
+  - component: {fileID: 7031934148405129669}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -159,3 +160,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   queueItemPrefab: {fileID: 7868416595756367663, guid: c38fc610c8c32784eb843a15d1421f5f,
     type: 3}
+--- !u!114 &7031934148405129669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857657293199553940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f56191ca51b4c3eb724e3798a8cf0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeholderBuildingPrefab: {fileID: 0}

@@ -46,7 +46,7 @@ namespace Manager {
             RepaintTargetHex();
         }
 
-        public void OnDown() {
+        public void OnDown(bool isPrimary) {
             if (target == null
              || path.Count == 0
              || PathGoesThroughFog()
@@ -54,7 +54,19 @@ namespace Manager {
                 return;
             }
 
-            source.EnqueueInteraction(new List<TileEntity>(path));
+            source.EnqueueInteraction(new List<TileEntity>(path), isPrimary);
+            path.Clear();
+        }
+
+        public void OnBuild(GameObject prefab) {
+            if (target == null
+             || path.Count == 0
+             || PathGoesThroughFog()
+             || target.standingEntity == source) {
+                return;
+            }
+
+            source.EnqueueBuild(new List<TileEntity>(path), prefab);
             path.Clear();
         }
 
@@ -110,7 +122,9 @@ namespace Manager {
 
         private void Update() {
             if (Input.GetMouseButtonDown(0)) {
-                OnDown();
+                OnDown(true);
+            } else if (Input.GetMouseButtonDown(1)) {
+                OnDown(false);
             }
             RepaintTargetHex();
         }
