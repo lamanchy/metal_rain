@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities;
 using Entities.Tile;
+using Entities.Wreckage;
 using UnityEngine;
 
 namespace Manager {
     public class Pathfinder : MonoBehaviour {
         public Dictionary<Vector3Int, TileEntity> allTiles;
         public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
+        
+        public int VisibilityRange;
 
-        public int visibilityRange;
+        private bool IsTargetBlocked => target == null || path.Count == 0 || PathGoesThroughFog() || target.standingEntity == source || target.standingEntity is FallenWreckage;
     
         public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
         private TileEntity target;
@@ -47,10 +50,7 @@ namespace Manager {
         }
 
         public void OnDown(bool isPrimary) {
-            if (target == null
-             || path.Count == 0
-             || PathGoesThroughFog()
-             || target.standingEntity == source) {
+            if (IsTargetBlocked) {
                 return;
             }
 
@@ -59,10 +59,7 @@ namespace Manager {
         }
 
         public void OnBuild(GameObject prefab) {
-            if (target == null
-             || path.Count == 0
-             || PathGoesThroughFog()
-             || target.standingEntity == source) {
+            if (IsTargetBlocked) {
                 return;
             }
 
@@ -79,14 +76,14 @@ namespace Manager {
         public Vector3 GetWorldPosition(Vector3Int position) => AllTiles[position].transform.position;
         
         private bool PathGoesThroughFog() {
-            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(VisibilityRange);
             return path.Any(tile => !visibleTiles.Contains(tile));
         }
 
         public void RepaintHexColors() {
             ClearHexColors();
             
-            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(visibilityRange);
+            var visibleTiles = source.CurrentTile.GetVisibleSurroundings(VisibilityRange);
 
             // Highlight visible tiles
             foreach (var tile in visibleTiles) {
@@ -109,12 +106,8 @@ namespace Manager {
         }
 
         public void RepaintTargetHex() {
-            if (target == null) {
-                return;
-            }
-
-            if (path.Count == 0 || PathGoesThroughFog() || target.standingEntity == source) {
-                target.SetHexColor(HexColors.blocked);
+            if (IsTargetBlocked) {
+                target?.SetHexColor(HexColors.blocked);
             } else if (target.standingEntity != null) {
                 target.SetHexColor(HexColors.interaction);
             }
