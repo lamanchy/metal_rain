@@ -119,17 +119,17 @@ namespace Entities.Tile {
                         break;
                     }
                     
-                    foreach (var neighbour in isOdd ? current.GetNeighbours().Reverse() : current.GetNeighbours()) {
-                        if (parent.ContainsKey(neighbour)) {
+                    foreach (var neighbor in isOdd ? current.GetNeighbours().Reverse() : current.GetNeighbours()) {
+                        if (parent.ContainsKey(neighbor) || neighbor.standingEntity != null && neighbor != target) {
                             continue;
                         }
-                        var distance = neighbour.Distance(target.Position) + traveled[current];
+                        var distance = neighbor.Distance(target.Position) + traveled[current];
                         if (!toSearch.ContainsKey(distance)) {
                             toSearch[distance] = new List<TileEntity>();
                         }
-                        toSearch[distance].Add(neighbour);
-                        parent[neighbour] = current;
-                        traveled[neighbour] = traveled[current] + 1;
+                        toSearch[distance].Add(neighbor);
+                        parent[neighbor] = current;
+                        traveled[neighbor] = traveled[current] + 1;
                     }
                     isOdd = !isOdd;
                 }
@@ -181,7 +181,7 @@ namespace Entities.Tile {
 
         private IEnumerable<TileEntity> GetNeighbours() {
             var result = GetSurroundings(1);
-            result.RemoveAll(tile => tile.standingEntity != null || Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
+            result.RemoveAll(tile => Mathf.Abs(GetTop().y - tile.GetTop().y) > 1);
 
             return result;
         }
