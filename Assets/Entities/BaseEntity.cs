@@ -51,7 +51,12 @@ namespace Entities {
             PowerDownCheck();
         }
 
-        protected void transferEnergy(float amount, BaseEntity target) {
+        /// <summary>
+        /// Transfers energy from this entity to target entity. Check both over/underflow and powering down.
+        /// </summary>
+        /// <param name="amount">Amount of energy to transfer. If negative, energy will be extracted instead.</param>
+        /// <param name="target">Other entity to receive the energy.</param>
+        protected void TransferEnergy(float amount, BaseEntity target) {
             if (amount >= 0) {
                 // Giving energy
                 if (amount > Energy) {

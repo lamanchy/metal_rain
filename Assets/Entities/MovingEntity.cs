@@ -93,7 +93,7 @@ namespace Entities {
                 && (isPrimary || otherEntity.IsPowered)
                 && otherEntity.Position == originalPosition 
                 && !actionQueue.First().HasBeenInterrupted) {
-                transferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
+                TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
                 yield return null;
             }
             otherEntity.PowerUpCheck();
