@@ -9,17 +9,40 @@ namespace Meteor {
         private Rigidbody rigidBody;
         private TimeManager timeManager;
 
+        private bool hasLanded;
+
         public GameObject FallenWreckagePrefab;
 
         public float Energy;
 
+        public const int MaximumEnergy = 10000;
+        public const int MinimumEnergy = 100;
+
         [HideInInspector] public Vector3 Velocity;
         [HideInInspector] public Vector3 AngularVelocity;
+
+        private float SizeFactor => (Energy - MinimumEnergy) / MaximumEnergy;
 
         private void Start() {
             rigidBody = GetComponent<Rigidbody>();
             timeManager = FindObjectOfType<TimeManager>();
-        
+
+            Energy = Random.Range(MinimumEnergy, MaximumEnergy);
+            
+            Velocity = new Vector3(
+                -2 + Random.Range(-0.1f, 0.1f),
+                -2 + Random.Range(-0.1f, 0.1f),
+                2 + Random.Range(-0.1f, 0.1f)
+            ) / SizeFactor;
+
+            AngularVelocity = new Vector3(
+                2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f),
+                2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f),
+                2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f)
+            ) / SizeFactor;
+
+            transform.localScale *= SizeFactor;
+
             SetSpeed();
         }
 
@@ -34,6 +57,11 @@ namespace Meteor {
         }
 
         private void OnCollisionEnter(Collision collision) {
+            if (hasLanded) {
+                // Has collided with multiple tiles at once
+                return;
+            }
+
             var tile = collision.gameObject.GetComponent<TileEntity>();
             if (tile == null) {
                 return;
@@ -56,8 +84,14 @@ namespace Meteor {
             var fallenWreckage = Instantiate(FallenWreckagePrefab).GetComponent<FallenWreckage>();
             fallenWreckage.Position = tile.Position;
             fallenWreckage.AlignToGrid();
+
+            // fallenWreckage.transform.position = transform.position;
+            fallenWreckage.transform.localScale *= SizeFactor;
+            fallenWreckage.transform.rotation = transform.rotation;
+            
             tile.standingEntity = fallenWreckage;
 
+            hasLanded = true;
             Destroy(gameObject);
         }
 
