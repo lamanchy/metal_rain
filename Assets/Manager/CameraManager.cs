@@ -29,6 +29,12 @@ namespace Manager {
             if (scroll > 0f) {
                 distance = Mathf.Max(distance - scroll, 0.2f);
             }
+
+            var targetPos = target.transform.position;
+            var cameraPos = camera.transform.position;
+            if (Physics.Raycast(targetPos, cameraPos - targetPos, out var hit, Vector3.Distance(targetPos, cameraPos))) {
+                camera.transform.position = hit.point;
+            }
         }
     }
 }
