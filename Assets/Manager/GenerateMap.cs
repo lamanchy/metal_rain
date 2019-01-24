@@ -27,8 +27,7 @@ namespace Manager {
             var sqrtSize = (int) Mathf.Sqrt(size);
             for (var x = -sqrtSize; x < sqrtSize; x++) {
                 for (var y = -sqrtSize; y < sqrtSize; ++y) {
-                    var g = PrefabUtility.InstantiatePrefab(tile) as GameObject;
-                    g.transform.parent = parent.transform;
+                    var g = Instantiate(tile, parent.transform);
 
                     var tileScript = g.GetComponent<TileEntity>();
                     var elevation = (Mathf.Pow(x - sqrtSize / 2, 2) + Mathf.Pow(y - sqrtSize / 2, 2)) / 100f;
@@ -98,15 +97,13 @@ namespace Manager {
 
                     // Create lower level
                     if (Math.Abs(levels.x) > 0.5f) {
-                        var firstLayer = PrefabUtility.InstantiatePrefab(tile) as GameObject;
-                        firstLayer.transform.parent = parent.transform;
+                        var firstLayer = Instantiate(tile, parent.transform);
                         SetTileScriptData(firstLayer.GetComponent<TileEntity>(), new Vector3Int(x, y + x / 2, 0), levels.x, levels.x);
                     }
                 
                     // Create upper level
                     if (Math.Abs(levels.y - levels.z) > 0.5f && Math.Abs(levels.y) > 0.5f && Math.Abs(levels.z) > 0.5f) {
-                        var secondLayer = PrefabUtility.InstantiatePrefab(tile) as GameObject;
-                        secondLayer.transform.parent = parent.transform;
+                        var secondLayer = Instantiate(tile, parent.transform);
                         SetTileScriptData(secondLayer.GetComponent<TileEntity>(), new Vector3Int(x, y + x / 2, 1), levels.z, levels.z - levels.y);
                     }
                 }

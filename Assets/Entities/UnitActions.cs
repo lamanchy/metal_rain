@@ -17,7 +17,7 @@ namespace Entities {
         private readonly MovingEntity movingEntity;
         public readonly List<TileEntity> Path;
 
-        public Color color => HexColors.movement;
+        public Color color => HexColors.Movement;
 
         public bool HasBeenInterrupted { get; set; }
 
@@ -67,7 +67,7 @@ namespace Entities {
         private readonly TileEntity target;
         private readonly bool isPrimary;
 
-        public Color color => HexColors.interaction;
+        public Color color => HexColors.Interaction;
         
         public bool HasBeenInterrupted { get; set; }
 
@@ -99,7 +99,7 @@ namespace Entities {
         private readonly TileEntity target;
         private readonly GameObject buildPrefab;
 
-        public Color color => HexColors.build;
+        public Color color => HexColors.Build;
 
         public bool HasBeenInterrupted { get; set; }
 

@@ -6,6 +6,11 @@ namespace Entities {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshRenderer))]
     public class BaseEntity : MonoBehaviour {
+        private static Pathfinder pathfinder;
+        public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
+
+        private Light energyLight;
+
         public Vector3Int Position;
         
         [Header("Base stats")]
@@ -15,14 +20,20 @@ namespace Entities {
 
         public float EnergyPerTick => EnergyPerSecond / 60f;
 
-        [HideInInspector]
-        public bool IsPowered = true;
-
-        private Pathfinder pathfinder;
-        public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
+        public bool IsPowered { get; protected set; } = true;
 
         protected virtual void Start() {
             Pathfinder.AllTiles[Position].standingEntity = this;
+            AlignToGrid();
+
+            // Setup energy visualization
+            energyLight = new GameObject("EnergyLight", typeof(Light)).GetComponent<Light>();
+            energyLight.transform.SetParent(transform);
+            energyLight.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            energyLight.color = HexColors.EnergyColor(Energy);
+            energyLight.range = 1;
+            energyLight.intensity = 10;
+
             PowerUpCheck();
         }
 
@@ -46,6 +57,7 @@ namespace Entities {
             }
 
             Energy = Mathf.Clamp(Energy + EnergyPerTick, 0, MaxEnergy);
+            energyLight.color = HexColors.EnergyColor(Energy);
             PowerDownCheck();
         }
 
@@ -78,8 +90,13 @@ namespace Entities {
             target.PowerDownCheck();
         }
 
-        protected virtual void PowerDown() {}
-        protected virtual void PowerUp() {}
+        protected virtual void PowerUp() {
+            energyLight.enabled = true;
+        }
+
+        protected virtual void PowerDown() {
+            energyLight.enabled = false;
+        }
 
         public virtual void DestroySelf() {
             Pathfinder.AllTiles[Position].standingEntity = null;

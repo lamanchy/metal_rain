@@ -69,7 +69,7 @@ namespace Manager {
 
         public void ClearHexColors() {
             foreach (var tile in AllTiles) {
-                tile.Value.SetHexColor(HexColors.unseen);
+                tile.Value.SetHexColor(HexColors.Unseen);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Manager {
 
             // Highlight visible tiles
             foreach (var tile in visibleTiles) {
-                tile.SetHexColor(HexColors.visible);
+                tile.SetHexColor(HexColors.Visible);
             }
 
             // Draw queued actions
@@ -101,15 +101,15 @@ namespace Manager {
                 if (!visibleTiles.Contains(tile)) {
                     wentOutOfVisible = true;
                 }
-                tile.SetHexColor(wentOutOfVisible ? HexColors.blocked : HexColors.path);
+                tile.SetHexColor(wentOutOfVisible ? HexColors.Blocked : HexColors.Path);
             }
         }
 
         public void RepaintTargetHex() {
             if (IsTargetBlocked) {
-                target?.SetHexColor(HexColors.blocked);
+                target?.SetHexColor(HexColors.Blocked);
             } else if (target.standingEntity != null) {
-                target.SetHexColor(HexColors.interaction);
+                target.SetHexColor(HexColors.Interaction);
             }
         }
 

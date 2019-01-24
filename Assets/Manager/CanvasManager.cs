@@ -7,9 +7,6 @@ using UnityEngine.UI;
 
 namespace Manager {
     public class CanvasManager : MonoBehaviour {
-        private static Color BarColorNormal = new Color(0.08f, 0.44f, 0.45f);
-        private static Color BarColorDanger = new Color(0.45f, 0.08f, 0.33f);
-
         private const float queueItemOffset = 75f;
 
         public GameObject queueItemPrefab;
@@ -44,12 +41,7 @@ namespace Manager {
             var energyPercentage = CurrentTarget.Energy / CurrentTarget.MaxEnergy;
             EnergyBarFill.rectTransform.offsetMin = new Vector2((width - width * energyPercentage) / 2, 0);
             EnergyBarFill.rectTransform.offsetMax = new Vector2((-width + width * energyPercentage) / 2, 0);
-
-            if (energyPercentage < 0.25) {
-                EnergyBarFill.color = BarColorDanger;
-            } else {
-                EnergyBarFill.color = BarColorNormal;
-            }
+            EnergyBarFill.color = HexColors.EnergyColor(CurrentTarget.Energy);
         }
 
         public void SelectionChanged(int previous, int next) {
