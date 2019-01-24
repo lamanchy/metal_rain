@@ -24,7 +24,7 @@ namespace Manager {
 
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll < 0f) {
-                distance = Mathf.Min(distance - scroll, 1f);
+                distance = Mathf.Min(distance - scroll, 1.2f);
             }
             if (scroll > 0f) {
                 distance = Mathf.Max(distance - scroll, 0.2f);
