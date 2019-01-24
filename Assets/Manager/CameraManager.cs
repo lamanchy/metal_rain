@@ -8,7 +8,7 @@ namespace Manager {
 
         public Vector3 offset;
 
-        private float distance = 1f;
+        private float distance = 0.5f;
         private float rotation;
 
         private void Update() {
@@ -24,10 +24,10 @@ namespace Manager {
 
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll < 0f) {
-                distance = Mathf.Min(distance - scroll, 3f);
+                distance = Mathf.Min(distance - scroll, 1f);
             }
             if (scroll > 0f) {
-                distance = Mathf.Max(distance - scroll, 0.5f);
+                distance = Mathf.Max(distance - scroll, 0.2f);
             }
         }
     }
