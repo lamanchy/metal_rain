@@ -85,19 +85,19 @@ namespace Entities {
         public IEnumerator Interact(BaseEntity otherEntity, bool isPrimary) {
             Debug.Log("Transfer started");
             var originalPosition = otherEntity.Position;
-            var lightning = Instantiate(transferLightningPrefab).GetComponent<LightningBoltScript>();
-            lightning.StartObject = gameObject;
-            lightning.EndObject = otherEntity.gameObject;
-            while (actionQueue.Count <= 1 
-                && IsPowered 
-                && (isPrimary || otherEntity.IsPowered)
-                && otherEntity.Position == originalPosition 
-                && !actionQueue.First().HasBeenInterrupted) {
-                TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
-                yield return null;
+
+            using (new EnergyTransferEffect(gameObject, otherEntity.gameObject)) {
+                while (actionQueue.Count <= 1 
+                    && IsPowered 
+                    && (isPrimary || otherEntity.IsPowered)
+                    && otherEntity.Position == originalPosition 
+                    && !actionQueue.First().HasBeenInterrupted) {
+                    TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
+                    yield return null;
+                }
             }
+            
             otherEntity.PowerUpCheck();
-            Destroy(lightning.gameObject);
             Debug.Log("Transfer ended");
         }
 

@@ -2,11 +2,11 @@
 
 namespace Manager {
     public class BuildManager : MonoBehaviour {
-        public GameObject placeholderBuildingPrefab;
+        public GameObject wPrefab;
 
         private void Update() {
             if (Input.GetKeyDown(KeyCode.W)) {
-                GetComponent<Pathfinder>().OnBuild(placeholderBuildingPrefab);
+                GetComponent<Pathfinder>().OnBuild(wPrefab);
             }
         }
     }

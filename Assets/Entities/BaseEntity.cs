@@ -13,9 +13,6 @@ namespace Entities {
         public int MaxEnergy;
         public int EnergyPerSecond;
 
-        [Header("Base prefabs")]
-        public GameObject transferLightningPrefab;
-
         public float EnergyPerTick => EnergyPerSecond / 60f;
 
         [HideInInspector]
@@ -24,8 +21,9 @@ namespace Entities {
         private Pathfinder pathfinder;
         public Pathfinder Pathfinder => pathfinder ? pathfinder : pathfinder = FindObjectOfType<Pathfinder>();
 
-        private void Start() {
+        protected virtual void Start() {
             Pathfinder.AllTiles[Position].standingEntity = this;
+            PowerUpCheck();
         }
 
         public void PowerDownCheck() {
@@ -42,7 +40,7 @@ namespace Entities {
             }
         }
 
-        private void FixedUpdate() {
+        protected virtual void FixedUpdate() {
             if (!IsPowered) {
                 return;
             }
@@ -82,6 +80,11 @@ namespace Entities {
 
         protected virtual void PowerDown() {}
         protected virtual void PowerUp() {}
+
+        public virtual void DestroySelf() {
+            Pathfinder.AllTiles[Position].standingEntity = null;
+            Destroy(gameObject);
+        }
 
         [ContextMenu("Align to grid")]
         public void AlignToGrid() => transform.position = Pathfinder.GetWorldPosition(Position);

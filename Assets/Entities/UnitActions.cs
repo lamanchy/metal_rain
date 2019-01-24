@@ -44,6 +44,7 @@ namespace Entities {
                     if (HasBeenInterrupted) {
                         // TODO better solve cancelling of movement mid transfer
                         movingEntity.transform.position = startingPosition;
+                        tile.standingEntity = null;
                         yield break;
                     }
                     movingEntity.transform.position = Vector3.Lerp(startingPosition, destinationPosition, i);

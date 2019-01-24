@@ -17,7 +17,7 @@ namespace Manager {
         }
 
         private void GenerateMeteor() {
-            var instance = Instantiate(WreckagePrefab);
+            var instance = Instantiate(WreckagePrefab, transform);
             instance.transform.position = new Vector3(Random.Range(0f, 50f) + WreckageSpawnDistance, WreckageSpawnDistance, Random.Range(0f, 50f) - WreckageSpawnDistance);
         }
         

@@ -1,11 +1,14 @@
-﻿using Entities;
+﻿using System;
 using Entities.Tile;
 using Entities.Wreckage;
 using Manager;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Meteor {
     public class FallingWreckage : MonoBehaviour {
+        private static Transform fallenWreckageContainer;
+
         private Rigidbody rigidBody;
         private TimeManager timeManager;
 
@@ -18,6 +21,8 @@ namespace Meteor {
         public const int MaximumEnergy = 10000;
         public const int MinimumEnergy = 100;
 
+        public static event Action<FallenWreckage> OnWreckageFallen;
+
         [HideInInspector] public Vector3 Velocity;
         [HideInInspector] public Vector3 AngularVelocity;
 
@@ -26,6 +31,9 @@ namespace Meteor {
         private void Start() {
             rigidBody = GetComponent<Rigidbody>();
             timeManager = FindObjectOfType<TimeManager>();
+            if (fallenWreckageContainer == null) {
+                fallenWreckageContainer = GameObject.Find("FallenWreckageContainer").transform;
+            }
 
             Energy = Random.Range(MinimumEnergy, MaximumEnergy);
             
@@ -41,7 +49,7 @@ namespace Meteor {
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f)
             ) / SizeFactor;
 
-            transform.localScale *= SizeFactor;
+            transform.localScale *= SizeFactor / 2f;
 
             SetSpeed();
         }
@@ -81,15 +89,15 @@ namespace Meteor {
                 return;
             }
 
-            var fallenWreckage = Instantiate(FallenWreckagePrefab).GetComponent<FallenWreckage>();
+            var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
+            fallenWreckage.Energy = Energy;
             fallenWreckage.Position = tile.Position;
             fallenWreckage.AlignToGrid();
-
-            // fallenWreckage.transform.position = transform.position;
+            
             fallenWreckage.transform.localScale *= SizeFactor;
             fallenWreckage.transform.rotation = transform.rotation;
-            
-            tile.standingEntity = fallenWreckage;
+
+            OnWreckageFallen?.Invoke(fallenWreckage);
 
             hasLanded = true;
             Destroy(gameObject);
