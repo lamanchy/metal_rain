@@ -8,12 +8,21 @@ namespace Manager {
 
         public Vector3 offset;
 
-        private float distance = 0.5f;
+        private float zoomLevel = 0.5f;
         private float rotation;
 
+        private float forcedDistance;
+
         private void Update() {
-            camera.transform.position = target.transform.position + Quaternion.AngleAxis(rotation, Vector3.up) * offset * distance;
+            camera.transform.position = target.transform.position + Quaternion.AngleAxis(rotation, Vector3.up) * offset * zoomLevel;
             camera.transform.LookAt(target.transform);
+
+            var distanceDiff = Vector3.Distance(camera.transform.position, target.transform.position) - forcedDistance;
+            if (distanceDiff > 0) {
+                var distanceMoved = Mathf.Max(9 * distanceDiff / 10, 0.01f);
+                camera.transform.position = Vector3.MoveTowards(camera.transform.position, target.transform.position, distanceMoved);
+                forcedDistance += distanceDiff - distanceMoved;
+            }
             
             if (Input.GetKey(KeyCode.A)) {
                 rotation -= 1f;
@@ -24,16 +33,17 @@ namespace Manager {
 
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll < 0f) {
-                distance = Mathf.Min(distance - scroll, 1.2f);
+                zoomLevel = Mathf.Min(zoomLevel - scroll, 1.2f);
             }
             if (scroll > 0f) {
-                distance = Mathf.Max(distance - scroll, 0.2f);
+                zoomLevel = Mathf.Max(zoomLevel - scroll, 0.2f);
             }
-
+            
             var targetPos = target.transform.position;
             var cameraPos = camera.transform.position;
             if (Physics.Raycast(targetPos, cameraPos - targetPos, out var hit, Vector3.Distance(targetPos, cameraPos))) {
                 camera.transform.position = hit.point;
+                forcedDistance = Vector3.Distance(camera.transform.position, targetPos);
             }
         }
     }
