@@ -34,8 +34,21 @@ namespace Entities {
                     yield break;
                 }
                 tile.standingEntity = movingEntity;
-                var startingPosition = movingEntity.transform.position;
+                var transform = movingEntity.transform;
+                var startingPosition = transform.position;
+                var startingRotation = transform.rotation;
                 var destinationPosition = tile.transform.position;
+                var direction = destinationPosition - startingPosition;
+                direction.y = 0;
+                var destinationRotation = Quaternion.LookRotation(direction);
+                destinationRotation.Normalize();
+                var middle = (startingPosition + destinationPosition) / 2;
+                middle.y = Mathf.Min(startingPosition.y, destinationPosition.y) - 1;
+                var middlePosition = (startingPosition + destinationPosition) / 2;
+                middlePosition.y = Mathf.Max(startingPosition.y, destinationPosition.y) + (float) 0.1;
+                startingPosition -= middle;
+                destinationPosition -= middle;
+                middlePosition -= middle;
                 var moveSpeed = movingEntity.MoveSpeedModifier / 1000f;
                 for (var i = 0f; i < 1f; i += moveSpeed) {
                     while (!movingEntity.IsPowered) {
@@ -47,7 +60,12 @@ namespace Entities {
                         tile.standingEntity = null;
                         yield break;
                     }
-                    movingEntity.transform.position = Vector3.Lerp(startingPosition, destinationPosition, i);
+
+                    movingEntity.transform.position = i < 0.5
+                        ? middle + Vector3.Slerp(startingPosition, middlePosition, 2 * i)
+                        : middle + Vector3.Slerp(middlePosition, destinationPosition, 2 * i - 1);
+                    movingEntity.transform.rotation = 
+                        Quaternion.Lerp(startingRotation, destinationRotation, 2*i);
                     yield return null;
                 }
                 movingEntity.Pathfinder.AllTiles[movingEntity.Position].standingEntity = null;
