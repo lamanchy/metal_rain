@@ -71,7 +71,7 @@ namespace Entities.Buildings {
                     wreckageInRange.Remove(wreckageInRange.Min);
                     continue;
                 }
-                wreckageInRange.Min.DestroySelf();
+                wreckageInRange.Min.Explode();
                 wreckageInRange.Remove(wreckageInRange.Min);
             }
             isExtracting = false;

@@ -21,7 +21,7 @@ namespace Entities.Buildings {
             }
 
             if (Energy > fallingWreckage.Energy) {
-                Destroy(fallingWreckage.gameObject);
+                fallingWreckage.Explode();
                 Energy -= fallingWreckage.Energy;
             } else {
                 Energy = 0;

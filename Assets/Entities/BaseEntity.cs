@@ -99,7 +99,7 @@ namespace Entities {
             energyLight.enabled = false;
         }
 
-        public virtual void DestroySelf() {
+        public virtual void Explode() {
             Pathfinder.AllTiles[Position].standingEntity = null;
             Destroy(gameObject);
         }

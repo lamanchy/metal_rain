@@ -90,6 +90,8 @@ namespace Meteor {
                 return;
             }
 
+            tile.standingEntity.Explode();
+
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy;
             fallenWreckage.Position = tile.Position;
@@ -101,7 +103,7 @@ namespace Meteor {
             OnWreckageFallen?.Invoke(fallenWreckage, this);
 
             hasLanded = true;
-            Destroy(gameObject);
+            Explode();
         }
 
         private void Update() {
@@ -116,6 +118,10 @@ namespace Meteor {
             }
         }
 
+        public void Explode() {
+            Destroy(gameObject);
+        }
+
         public IEnumerable<FallingWreckage> Split() {
             var splitEnergy = Energy / 3f;
             var firstSplit = Instantiate(this);
@@ -123,7 +129,7 @@ namespace Meteor {
             var secondSplit = Instantiate(this);
             secondSplit.Energy = splitEnergy;
 
-            Destroy(gameObject);
+            Explode();
             return new []{ firstSplit, secondSplit };
         }
     }

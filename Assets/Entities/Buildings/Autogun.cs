@@ -92,7 +92,7 @@ namespace Entities.Buildings {
         }
 
         private IEnumerator FireEffectTimer() {
-            for (var alpha = 1f; alpha > 0; alpha -= 0.05f) {
+            for (var alpha = 1f; alpha > 0; alpha -= 0.01f) {
                 lineRenderer.startColor = new Color(1, 1, 1, alpha);
                 yield return null;
             }
