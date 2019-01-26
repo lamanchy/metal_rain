@@ -90,7 +90,7 @@ namespace Meteor {
                 return;
             }
 
-            tile.standingEntity.Explode();
+            tile.standingEntity?.Explode();
 
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy;
