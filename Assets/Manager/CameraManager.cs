@@ -13,6 +13,10 @@ namespace Manager {
 
         private float forcedDistance;
 
+        private void Start() {
+            forcedDistance = 1000;
+        }
+
         private void Update() {
             camera.transform.position = target.transform.position + Quaternion.AngleAxis(rotation, Vector3.up) * offset * zoomLevel;
             camera.transform.LookAt(target.transform);
