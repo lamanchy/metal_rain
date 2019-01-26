@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Entities.Buildings;
-using UnityEngine;
+﻿using Entities.Buildings;
 
 namespace Entities.Wreckage {
     public class FallenWreckage : StaticEntity {
@@ -13,6 +11,6 @@ namespace Entities.Wreckage {
             ExtractionCoil.OnCoilBuilt -= OnCoilBuilt;
         }
 
-        private void OnCoilBuilt(ExtractionCoil coil) => coil.OnWreckageFallen(this);
+        private void OnCoilBuilt(ExtractionCoil coil) => coil.OnWreckageFallen(this, null);
     }
 }

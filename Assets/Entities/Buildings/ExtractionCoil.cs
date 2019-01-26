@@ -25,10 +25,10 @@ namespace Entities.Buildings {
         protected override void Start() {
             effectStart = transform.Find("EffectStart").gameObject;
             effectEnd = transform.Find("EffectEnd").gameObject;
+            wreckageInRange = new SortedSet<FallenWreckage>(new ObjectDistanceComparer(this));
 
             base.Start();
 
-            wreckageInRange = new SortedSet<FallenWreckage>(new ObjectDistanceComparer(this));
             OnCoilBuilt?.Invoke(this);
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
         }
@@ -90,7 +90,7 @@ namespace Entities.Buildings {
             effectLightning = null;
         }
 
-        public void OnWreckageFallen(FallenWreckage wreckage) {
+        public void OnWreckageFallen(FallenWreckage wreckage, FallingWreckage _) {
             if (Vector3.Distance(transform.position, wreckage.transform.position) > ExtractionRange) {
                 return;
             }

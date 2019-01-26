@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Entities.Tile;
 using Entities.Wreckage;
 using Manager;
@@ -21,7 +22,7 @@ namespace Meteor {
         public const int MaximumEnergy = 10000;
         public const int MinimumEnergy = 100;
 
-        public static event Action<FallenWreckage> OnWreckageFallen;
+        public static event Action<FallenWreckage, FallingWreckage> OnWreckageFallen;
 
         [HideInInspector] public Vector3 Velocity;
         [HideInInspector] public Vector3 AngularVelocity;
@@ -97,7 +98,7 @@ namespace Meteor {
             fallenWreckage.transform.localScale *= SizeFactor;
             fallenWreckage.transform.rotation = transform.rotation;
 
-            OnWreckageFallen?.Invoke(fallenWreckage);
+            OnWreckageFallen?.Invoke(fallenWreckage, this);
 
             hasLanded = true;
             Destroy(gameObject);
@@ -113,6 +114,17 @@ namespace Meteor {
             if (transform.position.y < 0) {
                 Destroy(gameObject);
             }
+        }
+
+        public IEnumerable<FallingWreckage> Split() {
+            var splitEnergy = Energy / 3f;
+            var firstSplit = Instantiate(this);
+            firstSplit.Energy = splitEnergy;
+            var secondSplit = Instantiate(this);
+            secondSplit.Energy = splitEnergy;
+
+            Destroy(gameObject);
+            return new []{ firstSplit, secondSplit };
         }
     }
 }

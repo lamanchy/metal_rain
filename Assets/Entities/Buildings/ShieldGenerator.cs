@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Entities.Buildings {
     public class ShieldGenerator : StaticEntity {
         private GameObject shield;
+
         protected override void Start() {
             shield = transform.Find("Shield").gameObject;
             base.Start();
