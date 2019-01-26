@@ -45,7 +45,7 @@ namespace Manager {
             
             var targetPos = target.transform.position;
             var cameraPos = camera.transform.position;
-            if (Physics.Raycast(targetPos, cameraPos - targetPos, out var hit, Vector3.Distance(targetPos, cameraPos))) {
+            if (Physics.Raycast(targetPos, cameraPos - targetPos, out var hit, Vector3.Distance(targetPos, cameraPos), ~LayerMask.NameToLayer("Tiles"))) {
                 camera.transform.position = hit.point;
                 forcedDistance = Vector3.Distance(camera.transform.position, targetPos);
             }

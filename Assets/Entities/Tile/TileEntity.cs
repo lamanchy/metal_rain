@@ -53,14 +53,6 @@ namespace Entities.Tile {
             }
         }
 
-        private void OnMouseEnter() {
-            Pathfinder.OnEnter(this);
-        }
-
-        private void OnMouseExit() {
-            Pathfinder.OnExit(this);
-        }
-
         // Sets new color for this hexagon; alpha is not overriden
         public void SetHexColor(Color newColor) {
             renderer.GetPropertyBlock(propertyBlock);

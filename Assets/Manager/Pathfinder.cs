@@ -9,17 +9,16 @@ using UnityEngine;
 namespace Manager {
     public class Pathfinder : MonoBehaviour {
         public Dictionary<Vector3Int, TileEntity> allTiles;
-        public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
-        
+
+        private List<TileEntity> path = new List<TileEntity>();
+        private TileEntity target;
+
         public int VisibilityRange;
+        public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
 
         private bool IsTargetBlocked => target == null || path.Count == 0 || PathGoesThroughFog() || target.standingEntity == source || target.standingEntity is FallenWreckage;
-    
-        public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
-        private TileEntity target;
-    
-        private List<TileEntity> path = new List<TileEntity>();
 
+        public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
 
         private Dictionary<Vector3Int, TileEntity> GetAllTiles() {
             var tiles = new Dictionary<Vector3Int, TileEntity>();
@@ -32,20 +31,30 @@ namespace Manager {
             return tiles;
         }
 
-        private void Start() {
-            target = source.CurrentTile;
-            OnEnter(source.CurrentTile);
-        }
+        private void Update() {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hit, float.PositiveInfinity, ~LayerMask.NameToLayer("Tiles"))) {
+                var newTarget = hit.collider.GetComponent<TileEntity>();
+                Debug.Assert(newTarget != null, "Ray should not hit anything else than TileEntity");
+                if (newTarget != target) {
+                    target = newTarget;;
+                    path = source.DestinationTile.GetPathTo(target);
+                    // RepaintHexColors();
+                }
+            } else {
+                // if (target != null) {
+                //     RepaintHexColors();
+                // }
+                target = null;
+                path.Clear();
+            }
 
-        public void OnEnter(TileEntity tile) {
-            target = tile;
-            path = source.DestinationTile.GetPathTo(target);
+            if (Input.GetMouseButtonDown(0)) {
+                OnDown(true);
+            } else if (Input.GetMouseButtonDown(1)) {
+                OnDown(false);
+            }
             RepaintHexColors();
-        }
-
-        public void OnExit(TileEntity tile) {
-            target = null;
-            path.Clear();
             RepaintTargetHex();
         }
 
@@ -74,7 +83,7 @@ namespace Manager {
         }
 
         public Vector3 GetWorldPosition(Vector3Int position) => AllTiles[position].transform.position;
-        
+
         private bool PathGoesThroughFog() {
             var visibleTiles = source.CurrentTile.GetVisibleSurroundings(VisibilityRange);
             return path.Any(tile => !visibleTiles.Contains(tile));
@@ -82,7 +91,7 @@ namespace Manager {
 
         public void RepaintHexColors() {
             ClearHexColors();
-            
+
             var visibleTiles = source.CurrentTile.GetVisibleSurroundings(VisibilityRange);
 
             // Highlight visible tiles
@@ -94,7 +103,7 @@ namespace Manager {
             foreach (var action in source.ActionQueue) {
                 action.SetHexColors();
             }
-            
+
             // Draw selected path
             var wentOutOfVisible = false;
             foreach (var tile in path) {
@@ -108,18 +117,9 @@ namespace Manager {
         public void RepaintTargetHex() {
             if (IsTargetBlocked) {
                 target?.SetHexColor(HexColors.Blocked);
-            } else if (target.standingEntity != null) {
-                target.SetHexColor(HexColors.Interaction);
+            } else if (target?.standingEntity != null) {
+                target?.SetHexColor(HexColors.Interaction);
             }
-        }
-
-        private void Update() {
-            if (Input.GetMouseButtonDown(0)) {
-                OnDown(true);
-            } else if (Input.GetMouseButtonDown(1)) {
-                OnDown(false);
-            }
-            RepaintTargetHex();
         }
     }
 }
