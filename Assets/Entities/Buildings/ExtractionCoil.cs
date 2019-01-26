@@ -38,6 +38,7 @@ namespace Entities.Buildings {
         }
 
         protected override void FixedUpdate() {
+            base.FixedUpdate();
             if (!IsPowered) {
                 return;
             }
@@ -51,13 +52,15 @@ namespace Entities.Buildings {
             if (!isExtracting && wreckageInRange.Count > 0 && wreckageInRange.Min != null) {
                 StartCoroutine(Extract());
             }
-
-            base.FixedUpdate();
         }
 
         private IEnumerator Extract() {
             isExtracting = true;
             while (wreckageInRange.Count > 0) {
+                if (wreckageInRange.Min == null) {
+                    wreckageInRange.Remove(wreckageInRange.Min);
+                    continue;
+                }
                 using (new EnergyTransferEffect(gameObject, wreckageInRange.Min.gameObject)) {
                     while (wreckageInRange.Min != null && wreckageInRange.Min.IsPowered) {
                         TransferEnergy(-ExtractionPerTick, wreckageInRange.Min);
