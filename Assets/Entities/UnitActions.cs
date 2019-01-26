@@ -27,7 +27,8 @@ namespace Entities {
         }
 
         public IEnumerator Execute() {
-            foreach (var tile in Path) {
+            while (Path.Count > 0) {
+                var tile = Path[0];
                 if (tile.standingEntity != null) {
                     Debug.Log("Path blocked.");
                     HasBeenInterrupted = true;
@@ -70,6 +71,8 @@ namespace Entities {
                 }
                 movingEntity.Pathfinder.AllTiles[movingEntity.Position].standingEntity = null;
                 movingEntity.Position = tile.Position;
+                Path.Remove(tile);
+                movingEntity.Pathfinder.RepaintHexColors();
             }
         }
 
