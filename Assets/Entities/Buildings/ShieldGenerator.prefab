@@ -172,7 +172,7 @@ MonoBehaviour:
   Position: {x: 0, y: 0, z: 0}
   Energy: 0
   MaxEnergy: 10000
-  EnergyPerSecond: -5
+  EnergyPerSecond: -2
 --- !u!135 &1294004300734040255
 SphereCollider:
   m_ObjectHideFlags: 0

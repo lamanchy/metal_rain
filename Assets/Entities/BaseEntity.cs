@@ -35,6 +35,7 @@ namespace Entities {
             energyLight.intensity = 10;
 
             PowerUpCheck();
+            PowerDownCheck();
         }
 
         public void PowerDownCheck() {

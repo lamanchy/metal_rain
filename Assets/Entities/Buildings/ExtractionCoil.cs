@@ -79,12 +79,15 @@ namespace Entities.Buildings {
 
         protected override void PowerUp() {
             base.PowerUp();
-            effectLightning = new EnergyTransferEffect(effectStart, effectEnd);
+            if (effectLightning == null) {
+                effectLightning = new EnergyTransferEffect(effectStart, effectEnd);
+            }
         }
 
         protected override void PowerDown() {
             base.PowerDown();
             effectLightning?.Dispose();
+            effectLightning = null;
         }
 
         public void OnWreckageFallen(FallenWreckage wreckage) {
