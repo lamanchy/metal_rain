@@ -28,6 +28,9 @@ namespace Entities {
 
         public IEnumerator Execute() {
             while (Path.Count > 0) {
+                if (HasBeenInterrupted) {
+                    yield break;
+                }
                 var tile = Path[0];
                 if (tile.standingEntity != null) {
                     Debug.Log("Path blocked.");
@@ -54,12 +57,6 @@ namespace Entities {
                 for (var i = 0f; i < 1f; i += moveSpeed) {
                     while (!movingEntity.IsPowered) {
                         yield return null;
-                    }
-                    if (HasBeenInterrupted) {
-                        // TODO better solve cancelling of movement mid transfer
-                        movingEntity.transform.position = startingPosition;
-                        tile.standingEntity = null;
-                        yield break;
                     }
 
                     movingEntity.transform.position = i < 0.5
