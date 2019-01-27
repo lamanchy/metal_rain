@@ -94,11 +94,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Position: {x: 0, y: 0, z: 0}
   Energy: 1
-  MaxEnergy: 5000
+  MaxEnergy: 15000
   MinEnergy: 1
   EnergyPerSecond: 0
   ExtractionRange: 4
-  ExtractionPerTick: 2
+  ExtractionPerTick: 5
 --- !u!1 &7912500356441233826
 GameObject:
   m_ObjectHideFlags: 0
