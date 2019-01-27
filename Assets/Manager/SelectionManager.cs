@@ -52,7 +52,7 @@ namespace Manager {
 
         private void OnMovingEntityDestroyed(MovingEntity entity) {
             var i = Entities.IndexOf(entity);
-            if (i > 0) {
+            if (i < 0) {
                 return;
             }
             if (i == index) {
