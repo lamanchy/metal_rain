@@ -119,5 +119,10 @@ namespace Entities {
 
         [ContextMenu("Align to grid")]
         public void AlignToGrid() => transform.position = Pathfinder.GetWorldPosition(Position);
+
+        protected virtual void OnDestroy()
+        {
+            StopAllCoroutines();
+        }
     }
 }
