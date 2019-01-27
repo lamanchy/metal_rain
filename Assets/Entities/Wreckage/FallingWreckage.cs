@@ -37,18 +37,19 @@ namespace Meteor {
             }
 
             Energy = Random.Range(MinimumEnergy, MaximumEnergy);
-            
+
+            const float velocityMultiplier = 0.1f;
             Velocity = new Vector3(
                 -2 + Random.Range(-0.1f, 0.1f),
                 -2 + Random.Range(-0.1f, 0.1f),
                 2 + Random.Range(-0.1f, 0.1f)
-            ) / SizeFactor;
+            ) / SizeFactor * velocityMultiplier;
 
             AngularVelocity = new Vector3(
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f),
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f),
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f)
-            ) / SizeFactor;
+            ) / SizeFactor * velocityMultiplier;
 
             transform.localScale *= SizeFactor / 2f;
 
