@@ -18,6 +18,10 @@ namespace Entities {
         public bool IsThawing => FreezeValue < MaxFreeze;
 
         protected override void FixedUpdate() {
+            if (Math.Abs(Energy - MaxEnergy) < 1) {
+                SceneManager.LoadScene("WinScene");
+            }
+            
             base.FixedUpdate();
             FreezeValue = IsPowered 
                 ? Mathf.Min(MaxFreeze, FreezeValue + FreezePerTick) 
