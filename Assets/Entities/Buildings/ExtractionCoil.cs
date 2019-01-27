@@ -31,6 +31,8 @@ namespace Entities.Buildings {
 
             OnCoilBuilt?.Invoke(this);
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
+
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.buildingSound, transform.position);
         }
 
         protected override void OnDestroy() {
@@ -82,12 +84,14 @@ namespace Entities.Buildings {
             if (effectLightning == null) {
                 effectLightning = new EnergyTransferEffect(effectStart, effectEnd);
             }
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerUpSound, transform.position);
         }
 
         protected override void PowerDown() {
             base.PowerDown();
             effectLightning?.Dispose();
             effectLightning = null;
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerDownSound, transform.position);
         }
 
         public void OnWreckageFallen(FallenWreckage wreckage, FallingWreckage _) {

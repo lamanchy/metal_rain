@@ -11,6 +11,7 @@ namespace Entities.Buildings {
         [Header("Autogun specific")]
         public int FireCooldown;
         public int FireCost;
+        public AudioSource laserSound;
 
         private GameObject gun;
         private Transform barrelEnd;
@@ -28,6 +29,8 @@ namespace Entities.Buildings {
             base.Start();
             lineRenderer.enabled = false;
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
+
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.buildingSound, transform.position);
         }
 
         protected override void OnDestroy() {
@@ -89,6 +92,7 @@ namespace Entities.Buildings {
             lineRenderer.SetPosition(1, nearestWreckage.transform.position);
 
             wreckageInRange.Remove(nearestWreckage);
+            laserSound.Play();
 
             isReadyToFire = false;
             StartCoroutine(FireEffectTimer());
@@ -106,6 +110,16 @@ namespace Entities.Buildings {
         private IEnumerator FireCooldownTimer() {
             yield return new WaitForSeconds(FireCooldown);
             isReadyToFire = true;
+        }
+
+        protected override void PowerUp() {
+            base.PowerUp();
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerUpSound, transform.position);
+        }
+
+        protected override void PowerDown() {
+            base.PowerDown();
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerDownSound, transform.position);
         }
 
         public void OnWreckageFallen(FallenWreckage _, FallingWreckage wreckage) {
