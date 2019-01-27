@@ -73,7 +73,7 @@ namespace Entities {
             if (amount >= 0) {
                 // Giving energy
                 if (amount > Energy - MinEnergy) {
-                    amount = Energy - MinEnergy;
+                    amount = Mathf.Max(Energy - MinEnergy, 0);
                     shouldContinue = false;
                 }
                 if (target.MaxEnergy - target.Energy < amount) {
@@ -83,7 +83,7 @@ namespace Entities {
             } else {
                 // Receiving energy
                 if (Math.Abs(amount) > target.Energy - target.MinEnergy) {
-                    amount = -(target.Energy - target.MinEnergy);
+                    amount = -Mathf.Max(target.Energy - target.MinEnergy, 0);
                     shouldContinue = false;
                 }
                 if (MaxEnergy - Energy < Math.Abs(amount)) {
