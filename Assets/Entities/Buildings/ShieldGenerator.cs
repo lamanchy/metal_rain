@@ -20,9 +20,9 @@ namespace Entities.Buildings {
                 return;
             }
 
-            if (Energy > fallingWreckage.Energy) {
+            if (Energy > fallingWreckage.Energy / 5) {
                 fallingWreckage.Explode();
-                Energy -= fallingWreckage.Energy;
+                Energy -= fallingWreckage.Energy / 5;
             } else {
                 Energy = 0;
             }
