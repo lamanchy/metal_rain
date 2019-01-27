@@ -59,7 +59,8 @@ namespace Entities.Buildings {
             }
 
             // Clear falling wreckage
-            while (wreckageInRange.Count > 0 && wreckageInRange.Min == null) {
+            while (wreckageInRange.Count > 0 && (wreckageInRange.Min == null ||
+                !Physics.Linecast(gun.transform.position, wreckageInRange.Min.transform.position))) {
                 wreckageInRange.Remove(wreckageInRange.Min);
             }
 

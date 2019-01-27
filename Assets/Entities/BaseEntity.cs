@@ -99,11 +99,17 @@ namespace Entities {
         }
 
         protected virtual void PowerUp() {
-            energyLight.enabled = true;
+            if (energyLight)
+            {
+                energyLight.enabled = true;
+            }
         }
 
         protected virtual void PowerDown() {
-            energyLight.enabled = false;
+            if (energyLight)
+            {
+                energyLight.enabled = false;
+            }
         }
 
         public virtual void Explode() {
