@@ -93,8 +93,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Position: {x: 0, y: 0, z: 0}
-  Energy: 0
-  MaxEnergy: 100000
+  Energy: 1
+  MaxEnergy: 5000
   EnergyPerSecond: 0
   ExtractionRange: 4
   ExtractionPerTick: 50
