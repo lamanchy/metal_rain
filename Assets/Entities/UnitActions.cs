@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Entities.Tile;
+using Manager;
 using UnityEngine;
 
 namespace Entities {
     public interface IUnitAction {
         bool HasBeenInterrupted { get; set; }
-        Color color { get; }
+        Color Color { get; }
+        Sprite Sprite { get; }
         IEnumerator Execute();
 
         void SetHexColors();
@@ -16,7 +18,8 @@ namespace Entities {
         private readonly MovingEntity movingEntity;
         public readonly List<TileEntity> Path;
 
-        public Color color => HexColors.Movement;
+        public Color Color => HexColors.Movement;
+        public Sprite Sprite => PrefabContainer.Instance.MoveAction;
 
         public bool HasBeenInterrupted { get; set; }
 
@@ -74,7 +77,7 @@ namespace Entities {
 
         public void SetHexColors() {
             foreach (var tile in Path) {
-                tile.SetHexColor(color);
+                tile.SetHexColor(Color);
             }
         }
     }
@@ -84,7 +87,8 @@ namespace Entities {
         private readonly TileEntity target;
         private readonly bool isPrimary;
 
-        public Color color => HexColors.Interaction;
+        public Color Color => HexColors.Interaction;
+        public Sprite Sprite => PrefabContainer.Instance.InteractAction;
         
         public bool HasBeenInterrupted { get; set; }
 
@@ -107,7 +111,7 @@ namespace Entities {
         }
 
         public void SetHexColors() {
-            target.SetHexColor(color);
+            target.SetHexColor(Color);
         }
     }
 
@@ -116,7 +120,8 @@ namespace Entities {
         private readonly TileEntity target;
         private readonly GameObject buildPrefab;
 
-        public Color color => HexColors.Build;
+        public Color Color => HexColors.Build;
+        public Sprite Sprite => PrefabContainer.Instance.BuildAction;
 
         public bool HasBeenInterrupted { get; set; }
 
@@ -140,7 +145,7 @@ namespace Entities {
         }
 
         public void SetHexColors() {
-            target.SetHexColor(color);
+            target.SetHexColor(Color);
         }
     }
 }

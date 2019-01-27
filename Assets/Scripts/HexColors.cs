@@ -18,9 +18,9 @@ public static class HexColors {
     public static readonly Color Path = new Color(0.25f, 0.6f, 0.24f, 0.75f);
     public static readonly Color Blocked = new Color(0.6f, 0.24f, 0.24f, 0.75f);
 
-    public static readonly Color Movement = new Color(0.25f, 0.24f, 0.6f, 0.75f);
-    public static readonly Color Interaction = new Color(0.59f, 0.6f, 0.24f, 0.75f);
-    public static readonly Color Build = new Color(0.24f, 0.57f, 0.6f, 0.75f);
+    public static readonly Color Movement = new Color(0.25f, 0.24f, 0.6f, 1f);
+    public static readonly Color Interaction = new Color(0.59f, 0.6f, 0.24f, 1f);
+    public static readonly Color Build = new Color(0.24f, 0.57f, 0.6f, 1f);
 
     private static readonly Gradient energyGradient = new Gradient();
 

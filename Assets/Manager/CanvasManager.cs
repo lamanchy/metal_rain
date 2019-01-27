@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 namespace Manager {
     public class CanvasManager : MonoBehaviour {
-        private const float queueItemOffset = 75f;
+        private const float XOffset = 55f;
+        private const float YOffset = 45f;
 
         public GameObject queueItemPrefab;
 
@@ -18,7 +19,7 @@ namespace Manager {
         private MovingEntity CurrentTarget => selectionManager.CurrentTarget;
         private Mothership Mothership => selectionManager.Mothership;
 
-        private List<Image> queueItems = new List<Image>();
+        private List<Icon> queueItems = new List<Icon>();
 
         private void Start() {
             energyBar = GameObject.Find("EnergyBar").GetComponent<HealthBar>();
@@ -60,25 +61,30 @@ namespace Manager {
             nextEntity.OnActionEnqueue += ActionEnqueued;
             nextEntity.OnActionDequeue += ActionDequeued;
 
-            queueItems = nextEntity.ActionQueue.Aggregate(new List<Image>(), AddAction);
+            queueItems = nextEntity.ActionQueue.Aggregate(new List<Icon>(), AddAction);
         }
 
-        private static float GetItemOffset(int itemsCount) => queueItemOffset * itemsCount;
+        private Vector3 GetItemOffset(int itemsCount) => new Vector3(
+            XOffset * itemsCount - ((RectTransform)energyBar.transform).rect.width / 2f + 50f,
+            itemsCount % 2 == 1 ? 90 + YOffset : 90,
+            0);
 
         private void ActionEnqueued(IUnitAction action) => AddAction(queueItems, action);
 
         private void ActionDequeued(int index) {
             for (var i = index + 1; i < queueItems.Count; ++i) {
-                queueItems[i].rectTransform.Translate(-queueItemOffset, 0, 0);
+                queueItems[i].transform.Translate(-XOffset, i % 2 == 1 ? -YOffset : YOffset, 0);
             }
             Destroy(queueItems[index].gameObject);
             queueItems.RemoveAt(index);
         }
 
-        private List<Image> AddAction(List<Image> items, IUnitAction action) {
-            var image = Instantiate(queueItemPrefab, energyBar.GetComponent<Image>().rectTransform).GetComponent<Image>();
-            image.rectTransform.Translate(GetItemOffset(items.Count), 0, 0);
-            image.color = action.color;
+        private List<Icon> AddAction(List<Icon> items, IUnitAction action) {
+            var image = Instantiate(queueItemPrefab, energyBar.transform).GetComponent<Icon>();
+            image.transform.Translate(GetItemOffset(items.Count));
+            image.Color = action.Color;
+            image.Sprite = action.Sprite;
+
             items.Add(image);
             return items;
         }

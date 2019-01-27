@@ -10,6 +10,11 @@ namespace Manager {
         public List<Mesh> MediumEnergyMeshes;
         public List<Mesh> LowEnergyMeshes;
 
+        [Header("Action icons")]
+        public Sprite MoveAction;
+        public Sprite InteractAction;
+        public Sprite BuildAction;
+
         public Mesh GetWreckageMesh(float energy) {
             if (energy < Constants.HighEnergyValue / 3) {
                 return LowEnergyMeshes[Random.Range(0, LowEnergyMeshes.Count)];
