@@ -4,20 +4,25 @@ using UnityEngine.UI;
 namespace Manager {
     public class Icon : MonoBehaviour {
         private Image image;
-        private Text text;
+        private Image Image => image ?? (image = transform.Find("Mask").Find("Image").GetComponent<Image>());
+        private Text textField;
+        private Text TextField => textField ?? (textField = transform.Find("Text").GetComponent<Text>());
 
         public Sprite Sprite;
         public string Text;
         public Color Color = Color.white;
-
-        // Start is called before the first frame update
+        
         private void Start() {
-            image = transform.Find("Mask").Find("Image").GetComponent<Image>();
-            text = transform.Find("Text").GetComponent<Text>();
+            Image.sprite = Sprite;
+            Image.color = Color;
+            TextField.text = Text;
+            TextField.color = Color;
+        }
 
-            image.sprite = Sprite;
-            image.color = Color;
-            text.text = Text;
+        public void ChangeColor(Color color) {
+            Color = color;
+            Image.color = color;
+            TextField.color = color;
         }
     }
 }

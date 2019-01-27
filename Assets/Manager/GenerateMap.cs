@@ -102,7 +102,7 @@ namespace Manager {
                     }
                 
                     // Create upper level
-                    if (Math.Abs(levels.y - levels.z) > 0.5f && Math.Abs(levels.y) > 0.5f && Math.Abs(levels.z) > 0.5f) {
+                    if (levels.z - levels.y > 0.5f && Math.Abs(levels.y) > 0.5f && Math.Abs(levels.z) > 0.5f) {
                         var secondLayer = Instantiate(tile, parent.transform);
                         SetTileScriptData(secondLayer.GetComponent<TileEntity>(), new Vector3Int(x, y + x / 2, 1), levels.z, levels.z - levels.y);
                     }

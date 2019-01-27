@@ -26,6 +26,8 @@ namespace Entities {
         public TileEntity DestinationTile => GetDestinationTile();
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
 
+        public static event Action<MovingEntity> OnMovingEntityDestroyed;
+
         private void EnqueueAction(IUnitAction action) {
             if (actionQueue.Count == MaxActionQueueSize) {
                 return;
@@ -143,6 +145,11 @@ namespace Entities {
                 }
             }
             return CurrentTile;
+        }
+
+        public override void Explode() {
+            base.Explode();
+            OnMovingEntityDestroyed?.Invoke(this);
         }
     }
 }
