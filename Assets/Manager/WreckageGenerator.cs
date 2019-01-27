@@ -2,7 +2,7 @@
 
 namespace Manager {
     public class WreckageGenerator : MonoBehaviour {
-        private const int WreckageSpawnDistance = 25;
+        private const int WreckageSpawnDistance = 20;
 
         private TimeManager timeManager;
 
