@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Entities {
     public class MovingEntity : BaseEntity {
+        private const int MaxActionQueueSize = 9;
         private const float EnergyTransferPerTick = 100;
 
         private readonly List<IUnitAction> actionQueue = new List<IUnitAction>();
@@ -26,8 +27,11 @@ namespace Entities {
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
 
         private void EnqueueAction(IUnitAction action) {
-            actionQueue.Add(action);
-            OnActionEnqueue?.Invoke(action);
+            if (actionQueue.Count < MaxActionQueueSize)
+            {
+                actionQueue.Add(action);
+                OnActionEnqueue?.Invoke(action);
+            }
         }
 
         public void EnqueueInteraction(List<TileEntity> path, bool isPrimary) {
