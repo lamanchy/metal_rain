@@ -27,11 +27,11 @@ namespace Entities {
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
 
         private void EnqueueAction(IUnitAction action) {
-            if (actionQueue.Count < MaxActionQueueSize)
-            {
-                actionQueue.Add(action);
-                OnActionEnqueue?.Invoke(action);
+            if (actionQueue.Count == MaxActionQueueSize) {
+                return;
             }
+            actionQueue.Add(action);
+            OnActionEnqueue?.Invoke(action);
         }
 
         public void EnqueueInteraction(List<TileEntity> path, bool isPrimary) {
@@ -92,8 +92,7 @@ namespace Entities {
             using (new EnergyTransferEffect(gameObject, otherEntity.gameObject)) {
                 var i = 40;
                 var shouldContinue = true;
-                while (actionQueue.Count <= 1 
-                    && IsPowered 
+                while (IsPowered 
                     && (isPrimary || otherEntity.IsPowered)
                     && otherEntity.Position == originalPosition 
                     && !actionQueue.First().HasBeenInterrupted
