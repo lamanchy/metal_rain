@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -640,9 +640,9 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: Space, year unknown. Intense space battle. One of the ships received several
     hits and the human aboard was badly injured and forced to make an emergency landing
-    on the close planet. Afterwards, this person went to a cryosleep to increase the
+    on the close planet. Afterward, this person went to a cryosleep to increase the
     chances of survival. Your task, computer, is to take care of the ship, fix it
-    using the robots and get the hell outa here!
+    using the robots and get the hell outta here!
 --- !u!222 &844659322
 CanvasRenderer:
   m_ObjectHideFlags: 0
