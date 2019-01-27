@@ -86,7 +86,7 @@ namespace Meteor {
                 return;
             }
 
-            if (transform.position.x < collision.gameObject.transform.position.x) {
+            if (transform.position.y < collision.gameObject.transform.position.y) {
                 // Wreckage hit the tile from side
                 Destroy(gameObject);
                 return;
