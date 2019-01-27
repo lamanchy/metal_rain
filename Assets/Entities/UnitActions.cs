@@ -140,7 +140,6 @@ namespace Entities {
             var building = GameObject.Instantiate(buildPrefab).GetComponent<StaticEntity>();
             building.Position = target.Position;
             building.AlignToGrid();
-            // target.standingEntity = building;
             yield return null;
         }
 

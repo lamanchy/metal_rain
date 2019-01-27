@@ -99,15 +99,13 @@ namespace Entities {
         }
 
         protected virtual void PowerUp() {
-            if (energyLight)
-            {
+            if (energyLight) {
                 energyLight.enabled = true;
             }
         }
 
         protected virtual void PowerDown() {
-            if (energyLight)
-            {
+            if (energyLight) {
                 energyLight.enabled = false;
             }
         }

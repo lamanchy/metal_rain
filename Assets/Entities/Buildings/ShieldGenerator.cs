@@ -31,13 +31,11 @@ namespace Entities.Buildings {
 
         protected override void PowerUp() {
             base.PowerUp();
-
             shield.SetActive(true);
         }
 
         protected override void PowerDown() {
             base.PowerDown();
-
             shield.SetActive(false);
         }
     }

@@ -108,14 +108,6 @@ namespace Entities.Buildings {
             isReadyToFire = true;
         }
 
-        protected override void PowerUp() {
-            base.PowerUp();
-        }
-
-        protected override void PowerDown() {
-            base.PowerDown();
-        }
-
         public void OnWreckageFallen(FallenWreckage _, FallingWreckage wreckage) {
             wreckageInRange.Remove(wreckage);
         }
