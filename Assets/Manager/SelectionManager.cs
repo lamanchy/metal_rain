@@ -7,6 +7,7 @@ namespace Manager {
         public MovingEntity[] Entities;
 
         public MovingEntity CurrentTarget => Entities[index];
+        public Mothership Mothership => Entities[0] as Mothership;
 
         private Pathfinder pathfinder => GetComponent<Pathfinder>();
         private CanvasManager canvasManager => GetComponent<CanvasManager>();

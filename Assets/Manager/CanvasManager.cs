@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Entities;
 using UnityEngine;
@@ -11,47 +10,53 @@ namespace Manager {
 
         public GameObject queueItemPrefab;
 
-        private Image energyBar;
-        public Image EnergyBar => energyBar ?? (energyBar = GameObject.Find("EnergyBar").GetComponent<Image>());
-
-        private Image energyBarBackground;
-        public Image EnergyBarBackground => energyBarBackground ?? (energyBarBackground = GameObject.Find("EnergyBarBackground").GetComponent<Image>());
-
-        private Image energyBarFill;
-        public Image EnergyBarFill => energyBarFill ?? (energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>());
-
-        private Text energyBarText;
-        public Text EnergyBarText => energyBarText ?? (energyBarText = GameObject.Find("EnergyBarText").GetComponent<Text>());
+        private HealthBar energyBar;
+        private HealthBar thawBar;
 
         private SelectionManager selectionManager;
-        public SelectionManager SelectionManager => selectionManager ?? (selectionManager = GetComponent<SelectionManager>());
 
-        public MovingEntity CurrentTarget => SelectionManager.CurrentTarget;
+        private MovingEntity CurrentTarget => selectionManager.CurrentTarget;
+        private Mothership Mothership => selectionManager.Mothership;
 
         private List<Image> queueItems = new List<Image>();
 
         private void Start() {
-            SelectionManager.CurrentTarget.OnActionEnqueue += ActionEnqueued;
-            SelectionManager.CurrentTarget.OnActionDequeue += ActionDequeued;
+            energyBar = GameObject.Find("EnergyBar").GetComponent<HealthBar>();
+            thawBar = GameObject.Find("ThawBar").GetComponent<HealthBar>();
+
+            selectionManager = GetComponent<SelectionManager>();
+
+            CurrentTarget.OnActionEnqueue += ActionEnqueued;
+            CurrentTarget.OnActionDequeue += ActionDequeued;
         }
 
         private void Update() {
-            EnergyBarText.text = $"{Format(CurrentTarget.Energy)} / {Format(CurrentTarget.MaxEnergy)} ({CurrentTarget.EnergyPerSecond}/s)";
-            var width = EnergyBarBackground.rectTransform.rect.size.x;
-            var energyPercentage = CurrentTarget.Energy / CurrentTarget.MaxEnergy;
-            EnergyBarFill.rectTransform.offsetMin = new Vector2((width - width * energyPercentage) / 2, 0);
-            EnergyBarFill.rectTransform.offsetMax = new Vector2((-width + width * energyPercentage) / 2, 0);
-            EnergyBarFill.color = HexColors.EnergyColor(CurrentTarget.Energy);
+            energyBar.UpdateBar(
+                $"{Format(CurrentTarget.Energy)} / {Format(CurrentTarget.MaxEnergy)} ({CurrentTarget.EnergyPerSecond}/s)",
+                CurrentTarget.Energy / CurrentTarget.MaxEnergy,
+                HexColors.EnergyColor(CurrentTarget.Energy)
+            );
+
+            if (Mothership.IsThawing) {
+                thawBar.gameObject.SetActive(true);
+                thawBar.UpdateBar(
+                    $"{Mothership.FreezeValue / Mothership.ThawPerSecond:n0} seconds until death",
+                    Mothership.FreezeValue / Mothership.MaxFreeze,
+                    Color.red
+                );
+            } else {
+                thawBar.gameObject.SetActive(false);
+            }
         }
 
         public void SelectionChanged(int previous, int next) {
-            var previousEntity = SelectionManager.Entities[previous];
+            var previousEntity = selectionManager.Entities[previous];
             previousEntity.OnActionEnqueue -= ActionEnqueued;
             previousEntity.OnActionDequeue -= ActionDequeued;
 
             queueItems.ForEach(item => Destroy(item.gameObject));
 
-            var nextEntity = SelectionManager.Entities[next];
+            var nextEntity = selectionManager.Entities[next];
             nextEntity.OnActionEnqueue += ActionEnqueued;
             nextEntity.OnActionDequeue += ActionDequeued;
 
@@ -63,7 +68,7 @@ namespace Manager {
         private void ActionEnqueued(IUnitAction action) => AddAction(queueItems, action);
 
         private void ActionDequeued(int index) {
-            for (int i = index + 1; i < queueItems.Count; ++i) {
+            for (var i = index + 1; i < queueItems.Count; ++i) {
                 queueItems[i].rectTransform.Translate(-queueItemOffset, 0, 0);
             }
             Destroy(queueItems[index].gameObject);
@@ -71,7 +76,7 @@ namespace Manager {
         }
 
         private List<Image> AddAction(List<Image> items, IUnitAction action) {
-            var image = Instantiate(queueItemPrefab, EnergyBar.rectTransform).GetComponent<Image>();
+            var image = Instantiate(queueItemPrefab, energyBar.GetComponent<Image>().rectTransform).GetComponent<Image>();
             image.rectTransform.Translate(GetItemOffset(items.Count), 0, 0);
             image.color = action.color;
             items.Add(image);
