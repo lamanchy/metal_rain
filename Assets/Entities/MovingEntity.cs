@@ -26,8 +26,10 @@ namespace Entities {
         public TileEntity CurrentTile => Pathfinder.AllTiles[Position];
 
         private void EnqueueAction(IUnitAction action) {
-            actionQueue.Add(action);
-            OnActionEnqueue?.Invoke(action);
+            if (actionQueue.Count < 9) {
+                actionQueue.Add(action);
+                OnActionEnqueue?.Invoke(action);
+            }
         }
 
         public void EnqueueInteraction(List<TileEntity> path, bool isPrimary) {
