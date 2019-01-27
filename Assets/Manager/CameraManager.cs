@@ -18,6 +18,8 @@ namespace Manager {
         }
 
         private void Update() {
+            if (!target) { return; }
+
             camera.transform.position = target.transform.position + Quaternion.AngleAxis(rotation, Vector3.up) * offset * zoomLevel;
             camera.transform.LookAt(target.transform);
 
