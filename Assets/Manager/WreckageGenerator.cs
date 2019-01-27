@@ -22,7 +22,7 @@ namespace Manager {
         }
         
         private void Update() {
-            if (timeManager.running && 98 > Random.Range(0, 100)) {
+            if (timeManager.running && 8 > Random.Range(0, 100)) {
                 GenerateMeteor();
             }
         }

@@ -97,7 +97,7 @@ MonoBehaviour:
   MaxEnergy: 5000
   EnergyPerSecond: 0
   ExtractionRange: 4
-  ExtractionPerTick: 50
+  ExtractionPerTick: 2
 --- !u!1 &7912500356441233826
 GameObject:
   m_ObjectHideFlags: 0
