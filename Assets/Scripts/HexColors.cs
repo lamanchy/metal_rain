@@ -22,6 +22,9 @@ public static class HexColors {
     public static readonly Color Interaction = new Color(0.59f, 0.6f, 0.24f, 1f);
     public static readonly Color Build = new Color(0.24f, 0.57f, 0.6f, 1f);
 
+    public static readonly Color SelectedUnit = new Color(0.18f, 0.84f, 0.81f, 1f);
+    public static readonly Color DeadUnit = new Color(0.12f, 0.05f, 0f, 0.75f);
+
     private static readonly Gradient energyGradient = new Gradient();
 
     public static Color EnergyColor(float value) => energyGradient.Evaluate(value / Constants.HighEnergyValue);
