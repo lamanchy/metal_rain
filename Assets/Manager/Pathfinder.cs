@@ -16,7 +16,8 @@ namespace Manager {
         public int VisibilityRange;
         public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
 
-        private bool IsTargetBlocked => target == null || path.Count == 0 || PathGoesThroughFog() || target.standingEntity == source || target.standingEntity is FallenWreckage;
+        private bool IsTargetBlocked => target == null || path.Count == 0 || target.standingEntity == source || target.standingEntity is FallenWreckage;
+                                                       //  || PathGoesThroughFog()
 
         public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
 
@@ -108,7 +109,8 @@ namespace Manager {
             var wentOutOfVisible = false;
             foreach (var tile in path) {
                 if (!visibleTiles.Contains(tile)) {
-                    wentOutOfVisible = true;
+                    // disabled for better playability
+                    // wentOutOfVisible = true;
                 }
                 tile.SetHexColor(wentOutOfVisible ? HexColors.Blocked : HexColors.Path);
             }
