@@ -123,6 +123,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FallenWreckagePrefab: {fileID: 3894027482445950755, guid: 483d984db901b5f41938a5ef3ceb2502,
     type: 3}
+  ExplosionPrefab: {fileID: 5732510027245753774, guid: f697b4d0e4f13d743987dfff379aec4d,
+    type: 3}
   Energy: 0
   Velocity: {x: 0, y: 0, z: 0}
   AngularVelocity: {x: 0, y: 0, z: 0}

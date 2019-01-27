@@ -18,6 +18,7 @@ namespace Meteor {
         private bool hasLanded;
 
         public GameObject FallenWreckagePrefab;
+        public GameObject ExplosionPrefab;
 
         public float Energy;
 
@@ -93,6 +94,7 @@ namespace Meteor {
             }
 
             // TODO impact explosion
+            Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
 
             if (tile.standingEntity != null && Energy < tile.standingEntity.Energy) {
                 // Wreckage hit entity with more power and is destroyed
