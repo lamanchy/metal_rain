@@ -16,7 +16,7 @@ namespace Manager {
         public int VisibilityRange;
         public Dictionary<Vector3Int, TileEntity> AllTiles => allTiles ?? (allTiles = GetAllTiles());
 
-        private bool IsTargetBlocked => target == null || path.Count == 0 || target.standingEntity == source || target.standingEntity is FallenWreckage;
+        private bool IsTargetBlocked => target == null || (path.Count == 0 && target.standingEntity == null) || target.standingEntity == source || target.standingEntity is FallenWreckage;
                                                        //  || PathGoesThroughFog()
 
         public MovingEntity source => gameObject.GetComponent<SelectionManager>().CurrentTarget;
@@ -38,7 +38,7 @@ namespace Manager {
                 var newTarget = hit.collider.GetComponent<TileEntity>();
                 Debug.Assert(newTarget != null, "Ray should not hit anything else than TileEntity");
                 if (newTarget != target) {
-                    target = newTarget;;
+                    target = newTarget;
                     path = source.DestinationTile.GetPathTo(target);
                 }
             } else {
@@ -60,6 +60,10 @@ namespace Manager {
                 return;
             }
 
+            if (path.Count == 0) {
+                path.Add(target);
+            }
+            
             source.EnqueueInteraction(new List<TileEntity>(path), isPrimary);
             path.Clear();
         }
