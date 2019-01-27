@@ -7,7 +7,7 @@ namespace Entities.Wreckage {
             ExtractionCoil.OnCoilBuilt += OnCoilBuilt;
         }
 
-        private void OnDestroy() {
+        protected override void OnDestroy() {
             ExtractionCoil.OnCoilBuilt -= OnCoilBuilt;
         }
 

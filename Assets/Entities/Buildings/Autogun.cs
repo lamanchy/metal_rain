@@ -30,7 +30,7 @@ namespace Entities.Buildings {
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
         }
 
-        private void OnDestroy() {
+        protected override void OnDestroy() {
             FallingWreckage.OnWreckageFallen -= OnWreckageFallen;
         }
 

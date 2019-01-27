@@ -40,12 +40,8 @@ namespace Manager {
                 if (newTarget != target) {
                     target = newTarget;;
                     path = source.DestinationTile.GetPathTo(target);
-                    // RepaintHexColors();
                 }
             } else {
-                // if (target != null) {
-                //     RepaintHexColors();
-                // }
                 target = null;
                 path.Clear();
             }
