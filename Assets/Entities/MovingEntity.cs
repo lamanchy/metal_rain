@@ -97,7 +97,7 @@ namespace Entities {
                     && (isPrimary || otherEntity.IsPowered)
                     && otherEntity.Position == originalPosition 
                     && !actionQueue.First().HasBeenInterrupted
-                    && i > 0
+                    && (i > 0 || !isPrimary)  // limit only giving, not receiving
                     && shouldContinue) {
                     shouldContinue = TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
                     i--;
