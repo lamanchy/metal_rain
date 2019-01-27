@@ -7,6 +7,7 @@ namespace Entities.Buildings {
 
         protected override void Start() {
             shield = transform.Find("Shield").gameObject;
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.buildingSound, transform.position);
             base.Start();
         }
 
@@ -32,11 +33,13 @@ namespace Entities.Buildings {
         protected override void PowerUp() {
             base.PowerUp();
             shield.SetActive(true);
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerUpSound, transform.position);
         }
 
         protected override void PowerDown() {
             base.PowerDown();
             shield.SetActive(false);
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerDownSound, transform.position);
         }
     }
 }

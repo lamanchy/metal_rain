@@ -28,6 +28,8 @@ namespace Entities.Buildings {
             base.Start();
             lineRenderer.enabled = false;
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
+
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.buildingSound, transform.position);
         }
 
         protected override void OnDestroy() {
@@ -106,6 +108,16 @@ namespace Entities.Buildings {
         private IEnumerator FireCooldownTimer() {
             yield return new WaitForSeconds(FireCooldown);
             isReadyToFire = true;
+        }
+
+        protected override void PowerUp() {
+            base.PowerUp();
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerUpSound, transform.position);
+        }
+
+        protected override void PowerDown() {
+            base.PowerDown();
+            AudioSource.PlayClipAtPoint(AudioClipsManager.Instance.powerDownSound, transform.position);
         }
 
         public void OnWreckageFallen(FallenWreckage _, FallingWreckage wreckage) {
