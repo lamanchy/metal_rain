@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Entities {
     public class MovingEntity : BaseEntity {
-        private const float EnergyTransferPerTick = 10;
+        private const float EnergyTransferPerTick = 100;
 
         private readonly List<IUnitAction> actionQueue = new List<IUnitAction>();
         public IReadOnlyCollection<IUnitAction> ActionQueue => actionQueue;
@@ -86,14 +86,16 @@ namespace Entities {
             var originalPosition = otherEntity.Position;
 
             using (new EnergyTransferEffect(gameObject, otherEntity.gameObject)) {
-                var i = 100;
+                var i = 40;
+                var shouldContinue = true;
                 while (actionQueue.Count <= 1 
                     && IsPowered 
                     && (isPrimary || otherEntity.IsPowered)
                     && otherEntity.Position == originalPosition 
                     && !actionQueue.First().HasBeenInterrupted
-                    && i > 0) {
-                    TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
+                    && i > 0
+                    && shouldContinue) {
+                    shouldContinue = TransferEnergy(isPrimary ? EnergyTransferPerTick : -EnergyTransferPerTick, otherEntity);
                     i--;
                     yield return null;
                 }

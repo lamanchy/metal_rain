@@ -16,6 +16,7 @@ namespace Entities {
         [Header("Base stats")]
         public float Energy;
         public int MaxEnergy;
+        public int MinEnergy;
         public int EnergyPerSecond;
 
         public float EnergyPerTick => EnergyPerSecond / 60f;
@@ -67,28 +68,34 @@ namespace Entities {
         /// </summary>
         /// <param name="amount">Amount of energy to transfer. If negative, energy will be extracted instead.</param>
         /// <param name="target">Other entity to receive the energy.</param>
-        protected void TransferEnergy(float amount, BaseEntity target) {
+        protected bool TransferEnergy(float amount, BaseEntity target) {
+            var shouldContinue = true;
             if (amount >= 0) {
                 // Giving energy
-                if (amount > Energy) {
-                    amount = Energy;
+                if (amount > Energy - MinEnergy) {
+                    amount = Energy - MinEnergy;
+                    shouldContinue = false;
                 }
                 if (target.MaxEnergy - target.Energy < amount) {
                     amount = target.MaxEnergy - target.Energy;
+                    shouldContinue = false;
                 }
             } else {
                 // Receiving energy
-                if (Math.Abs(amount) > target.Energy) {
-                    amount = -target.Energy;
+                if (Math.Abs(amount) > target.Energy - target.MinEnergy) {
+                    amount = -(target.Energy - target.MinEnergy);
+                    shouldContinue = false;
                 }
                 if (MaxEnergy - Energy < Math.Abs(amount)) {
                     amount = Energy - MaxEnergy;
+                    shouldContinue = false;
                 }
             }
             target.Energy += amount;
             Energy -= amount;
             PowerDownCheck();
             target.PowerDownCheck();
+            return shouldContinue;
         }
 
         protected virtual void PowerUp() {
