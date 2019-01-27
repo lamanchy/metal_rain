@@ -20,6 +20,15 @@ public class AudioClipsManager : MonoBehaviour
         Instance = this;
     }
 
+    private void Update()
+    {
+        // NOTE It's super shit to have this code here in AudioClipsManager but good enought at this moment
+        if(Input.GetKeyUp(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenuScene");
+        }
+    }
+
     private void OnDestroy()
     {
         Instance = null;
