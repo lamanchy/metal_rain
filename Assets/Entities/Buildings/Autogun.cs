@@ -11,6 +11,7 @@ namespace Entities.Buildings {
         [Header("Autogun specific")]
         public int FireCooldown;
         public int FireCost;
+        public AudioSource laserSound;
 
         private GameObject gun;
         private Transform barrelEnd;
@@ -91,6 +92,7 @@ namespace Entities.Buildings {
             lineRenderer.SetPosition(1, nearestWreckage.transform.position);
 
             wreckageInRange.Remove(nearestWreckage);
+            laserSound.Play();
 
             isReadyToFire = false;
             StartCoroutine(FireEffectTimer());
