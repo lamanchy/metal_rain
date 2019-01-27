@@ -23,7 +23,6 @@ public static class HexColors {
     public static readonly Color Build = new Color(0.24f, 0.57f, 0.6f, 0.75f);
 
     private static readonly Gradient energyGradient = new Gradient();
-    private const float HighEnergyValue = 10000;
 
-    public static Color EnergyColor(float value) => energyGradient.Evaluate(value / HighEnergyValue);
+    public static Color EnergyColor(float value) => energyGradient.Evaluate(value / Constants.HighEnergyValue);
 }

@@ -148,6 +148,8 @@ MonoBehaviour:
   Entities:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &894093685790490996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wPrefab: {fileID: 4177643152293520611, guid: 127555830de12fd4fa7d732bc5ffb895, type: 3}
   ePrefab: {fileID: 1350287515609370728, guid: e9bfad54ffe7370459802fa3022f21d5, type: 3}
+  rPrefab: {fileID: 7115166084160107095, guid: 058e47f8e12373f45823b09d851f6290, type: 3}
 --- !u!114 &8780335780767514991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,3 +192,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LightningPrefab: {fileID: 106988, guid: 15dec7b07032b2f4aa6f855bfbe120f7, type: 3}
+  HighEnergyMeshes:
+  - {fileID: 4300000, guid: 99971638944b20844be5879c23720abc, type: 3}
+  - {fileID: 4300000, guid: 8a4c61f9b74d45f469c31b9dafb626a8, type: 3}
+  MediumEnergyMeshes:
+  - {fileID: 4300000, guid: 8379e06df3cd4df40bf9960df63c7473, type: 3}
+  - {fileID: 4300000, guid: c1a6381b0540e454783968a2e7ef7e57, type: 3}
+  LowEnergyMeshes:
+  - {fileID: 4300000, guid: f83f09ff08fa5f740acfc9b8e6299a91, type: 3}
+  - {fileID: 4300000, guid: 6821f7e523bb70649b2268235e188502, type: 3}
+  - {fileID: 4300000, guid: 3efa149237b1d434e86cbedbe180a18a, type: 3}

@@ -9,9 +9,11 @@ using Random = UnityEngine.Random;
 namespace Meteor {
     public class FallingWreckage : MonoBehaviour {
         private static Transform fallenWreckageContainer;
+        private static PrefabContainer prefabContainer;
+        private static TimeManager timeManager;
 
         private Rigidbody rigidBody;
-        private TimeManager timeManager;
+        private MeshFilter meshFilter;
 
         private bool hasLanded;
 
@@ -30,13 +32,22 @@ namespace Meteor {
         private float SizeFactor => (Energy - MinimumEnergy) / MaximumEnergy;
 
         private void Start() {
-            rigidBody = GetComponent<Rigidbody>();
-            timeManager = FindObjectOfType<TimeManager>();
+            // Initialize static members
             if (fallenWreckageContainer == null) {
                 fallenWreckageContainer = GameObject.Find("FallenWreckageContainer").transform;
             }
+            if (prefabContainer == null) {
+                prefabContainer = PrefabContainer.Instance;
+            }
+            if (timeManager == null) {
+                timeManager = FindObjectOfType<TimeManager>();
+            }
+            
+            rigidBody = GetComponent<Rigidbody>();
+            meshFilter = GetComponent<MeshFilter>();
 
             Energy = Random.Range(MinimumEnergy, MaximumEnergy);
+            meshFilter.sharedMesh = prefabContainer.GetWreckageMesh(Energy);
             
             Velocity = new Vector3(
                 -2 + Random.Range(-0.1f, 0.1f),
@@ -49,8 +60,6 @@ namespace Meteor {
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f),
                 2 * Random.Range(0.1f, 2f) * 2 - 1 + Random.Range(-1f, 1f)
             ) / SizeFactor;
-
-            transform.localScale *= SizeFactor / 2f;
 
             SetSpeed();
         }
@@ -95,9 +104,9 @@ namespace Meteor {
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy;
             fallenWreckage.Position = tile.Position;
+            fallenWreckage.GetComponent<MeshFilter>().sharedMesh = meshFilter.sharedMesh;
             fallenWreckage.AlignToGrid();
             
-            fallenWreckage.transform.localScale *= SizeFactor;
             fallenWreckage.transform.rotation = transform.rotation;
 
             OnWreckageFallen?.Invoke(fallenWreckage, this);
