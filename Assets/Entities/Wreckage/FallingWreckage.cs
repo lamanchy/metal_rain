@@ -29,7 +29,7 @@ namespace Meteor {
         [HideInInspector] public Vector3 Velocity;
         [HideInInspector] public Vector3 AngularVelocity;
 
-        private float SizeFactor => (Energy - MinimumEnergy) / MaximumEnergy;
+        private float SizeFactor => (1 + Energy - MinimumEnergy) / MaximumEnergy;
 
         private void Start() {
             // Initialize static members
