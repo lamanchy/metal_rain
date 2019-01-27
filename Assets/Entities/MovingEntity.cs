@@ -54,7 +54,7 @@ namespace Entities {
         }
 
         public void EnqueueBuild(List<TileEntity> path, GameObject prefab) {
-            if(path == null) { return; }
+            if(path == null || path.Count == 0) { return; }
 
             if (path.Last().standingEntity != null) {
                 Debug.Log("Can't build on occupied tile.");
