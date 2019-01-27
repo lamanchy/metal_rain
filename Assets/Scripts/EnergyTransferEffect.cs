@@ -9,7 +9,7 @@ public class EnergyTransferEffect : IDisposable {
 
     public EnergyTransferEffect(GameObject start, GameObject end) {
         if (prefab == null) {
-            prefab = GameObject.FindObjectOfType<PrefabContainer>().LightningPrefab;
+            prefab = PrefabContainer.Instance.LightningPrefab;
         }
         Lightning = GameObject.Instantiate(prefab, start.transform).GetComponent<LightningBoltScript>();
         Lightning.StartObject = start;
