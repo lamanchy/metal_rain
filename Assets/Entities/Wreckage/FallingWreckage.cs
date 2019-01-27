@@ -30,7 +30,7 @@ namespace Meteor {
         [HideInInspector] public Vector3 Velocity;
         [HideInInspector] public Vector3 AngularVelocity;
 
-        private float SizeFactor => (Energy - MinimumEnergy) / MaximumEnergy;
+        private float SizeFactor => (1 + Energy - MinimumEnergy) / MaximumEnergy;
 
         private void Start() {
             // Initialize static members
@@ -87,7 +87,7 @@ namespace Meteor {
                 return;
             }
 
-            if (transform.position.x < collision.gameObject.transform.position.x) {
+            if (transform.position.y < collision.gameObject.transform.position.y) {
                 // Wreckage hit the tile from side
                 Destroy(gameObject);
                 return;
@@ -106,6 +106,7 @@ namespace Meteor {
 
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy / 7;
+            // fallenWreckage.EnergyPerSecond = (int) (-fallenWreckage.Energy / 30);
             fallenWreckage.Position = tile.Position;
             var mf = fallenWreckage.GetComponent<MeshFilter>();
             if (mf != null)

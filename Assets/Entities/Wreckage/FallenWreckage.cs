@@ -12,5 +12,9 @@ namespace Entities.Wreckage {
         }
 
         private void OnCoilBuilt(ExtractionCoil coil) => coil.OnWreckageFallen(this, null);
+
+        protected override void PowerDown() {
+            // Explode();
+        }
     }
 }
