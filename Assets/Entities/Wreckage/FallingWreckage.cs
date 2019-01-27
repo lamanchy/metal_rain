@@ -105,7 +105,11 @@ namespace Meteor {
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy / 7;
             fallenWreckage.Position = tile.Position;
-            fallenWreckage.GetComponent<MeshFilter>().sharedMesh = meshFilter.sharedMesh;
+            var mf = fallenWreckage.GetComponent<MeshFilter>();
+            if (mf != null)
+            {
+                mf.sharedMesh = meshFilter.sharedMesh;
+            }
             fallenWreckage.AlignToGrid();
             
             fallenWreckage.transform.rotation = transform.rotation;

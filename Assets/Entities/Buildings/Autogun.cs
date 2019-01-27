@@ -34,7 +34,7 @@ namespace Entities.Buildings {
             FallingWreckage.OnWreckageFallen -= OnWreckageFallen;
         }
 
-        private void OnTriggerEnter(Collider other) {
+        private void OnTriggerStay(Collider other) {
             var fallingWreckage = other.GetComponent<FallingWreckage>();
             if (fallingWreckage == null) {
                 return;
@@ -60,7 +60,7 @@ namespace Entities.Buildings {
 
             // Clear falling wreckage
             while (wreckageInRange.Count > 0 && (wreckageInRange.Min == null ||
-                !Physics.Linecast(gun.transform.position, wreckageInRange.Min.transform.position))) {
+                !Physics.Linecast(barrelEnd.transform.position, wreckageInRange.Min.transform.position))) {
                 wreckageInRange.Remove(wreckageInRange.Min);
             }
 
