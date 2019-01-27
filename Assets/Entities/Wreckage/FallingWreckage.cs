@@ -106,7 +106,7 @@ namespace Meteor {
 
             var fallenWreckage = Instantiate(FallenWreckagePrefab, fallenWreckageContainer).GetComponent<FallenWreckage>();
             fallenWreckage.Energy = Energy / 7;
-            // fallenWreckage.EnergyPerSecond = (int) (-fallenWreckage.Energy / 30);
+            fallenWreckage.EnergyPerSecond = (int) (-fallenWreckage.Energy / 30);
             fallenWreckage.Position = tile.Position;
             var mf = fallenWreckage.GetComponent<MeshFilter>();
             if (mf != null)
