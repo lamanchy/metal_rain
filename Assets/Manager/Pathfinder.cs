@@ -68,7 +68,7 @@ namespace Manager {
         }
 
         public void OnBuild(GameObject prefab) {
-            if (IsTargetBlocked) {
+            if (IsTargetBlocked || source is Mothership) {
                 return;
             }
 

@@ -95,3 +95,7 @@ MonoBehaviour:
   MaxEnergy: 1000000
   EnergyPerSecond: -100
   baseMoveSpeed: 5
+  FreezeValue: 200
+  MaxFreeze: 200
+  FreezePerSecond: 5
+  ThawPerSecond: 10
