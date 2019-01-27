@@ -1,5 +1,4 @@
-﻿using Meteor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Manager {
     public class WreckageGenerator : MonoBehaviour {
@@ -22,7 +21,9 @@ namespace Manager {
         }
         
         private void Update() {
-            if (timeManager.running && 8 > Random.Range(0, 100)) {
+            // peak at 60 seconds, calm at 180 seconds, period 120
+            var probability = (Mathf.Sin(Time.timeSinceLevelLoad * 0.02617993877f) + 1) * 50;
+            if (timeManager.running && probability > Random.Range(0, 100)) {
                 GenerateMeteor();
             }
         }

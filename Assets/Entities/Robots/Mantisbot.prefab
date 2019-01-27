@@ -92,9 +92,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Position: {x: 58, y: 45, z: 1}
   Energy: 10000
-  MaxEnergy: 10000
+  MaxEnergy: 20000
+  MinEnergy: 0
   EnergyPerSecond: -50
-  transferLightningPrefab: {fileID: 106988, guid: 15dec7b07032b2f4aa6f855bfbe120f7,
-    type: 3}
-  IsPowered: 1
   baseMoveSpeed: 40

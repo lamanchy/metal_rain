@@ -95,6 +95,7 @@ MonoBehaviour:
   Position: {x: 0, y: 0, z: 0}
   Energy: 1
   MaxEnergy: 5000
+  MinEnergy: 1
   EnergyPerSecond: 0
   ExtractionRange: 4
   ExtractionPerTick: 2
