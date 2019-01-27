@@ -20,9 +20,10 @@ namespace Entities.Buildings {
                 return;
             }
 
-            if (Energy > fallingWreckage.Energy / 5) {
+            var impactEnergy = fallingWreckage.Energy * fallingWreckage.Energy / 100000;
+            if (Energy > impactEnergy) {
                 fallingWreckage.Explode();
-                Energy -= fallingWreckage.Energy / 5;
+                Energy -= impactEnergy;
             } else {
                 Energy = 0;
             }

@@ -16,6 +16,7 @@ namespace Entities.Buildings {
         private Transform barrelEnd;
         private LineRenderer lineRenderer;
         private bool isReadyToFire = true;
+        private const float minEnergyToAttack = 3000;
 
         private SortedSet<FallingWreckage> wreckageInRange;
 
@@ -23,7 +24,7 @@ namespace Entities.Buildings {
             gun = transform.Find("Gun").gameObject;
             barrelEnd = gun.transform.Find("BarrelEnd");
             lineRenderer = GetComponent<LineRenderer>();
-            wreckageInRange = new SortedSet<FallingWreckage>(new ObjectDistanceComparer(this));
+            wreckageInRange = new SortedSet<FallingWreckage>(new WreckageSizeComparer());
             base.Start();
             lineRenderer.enabled = false;
             FallingWreckage.OnWreckageFallen += OnWreckageFallen;
@@ -63,7 +64,9 @@ namespace Entities.Buildings {
             }
 
             // Extract from nearest wreckage
-            if (wreckageInRange.Count > 0 && wreckageInRange.Min != null) {
+            if (wreckageInRange.Count > 0
+                && wreckageInRange.Min != null
+                && wreckageInRange.Min.Energy >= minEnergyToAttack) {
                 gun.transform.LookAt(wreckageInRange.Min.transform);
                 Fire();
             }

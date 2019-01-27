@@ -265,7 +265,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 6
+  m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7016023006416151302
 MonoBehaviour:
@@ -282,9 +282,10 @@ MonoBehaviour:
   Position: {x: 0, y: 0, z: 0}
   Energy: 0
   MaxEnergy: 10000
+  MinEnergy: 0
   EnergyPerSecond: 0
-  FireCooldown: 5
-  FireCost: 500
+  FireCooldown: 1
+  FireCost: 200
 --- !u!1 &9222597153464686172
 GameObject:
   m_ObjectHideFlags: 0
